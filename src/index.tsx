@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {RestfulProvider} from "restful-react";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RestfulProvider base="">
+      <App />
+    </RestfulProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
