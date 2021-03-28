@@ -4,22 +4,22 @@ import React from "react";
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from "restful-react";
 export const SPEC_VERSION = "v1"; 
 export interface Chamber {
-  id?: number;
   timestamp?: string | null;
+  id?: number;
   description: string;
 }
 
 export interface Sensor {
+  timestamp?: string | null;
   id?: number;
   chamber?: Chamber;
-  timestamp?: string | null;
   description: string;
 }
 
 export interface Sensor1 {
+  timestamp?: string | null;
   id?: number;
   chamber?: Chamber;
-  timestamp?: string | null;
   description?: string;
 }
 
@@ -29,33 +29,33 @@ export interface Error {
    */
   message?: string;
   /**
-   * Errors
+   * Error name
    */
-  errors?: {[key: string]: any};
+  status?: string;
   /**
    * Error code
    */
   code?: number;
   /**
-   * Error name
+   * Errors
    */
-  status?: string;
+  errors?: {[key: string]: any};
 }
 
 export interface Configuration {
   id?: number;
-  end: string;
   description: string;
   chamber_id?: number | null;
   start: string;
+  end: string;
 }
 
 export interface Configuration1 {
   id?: number;
-  end?: string;
   description?: string;
   chamber_id?: number | null;
   start?: string;
+  end?: string;
 }
 
 /**
@@ -75,7 +75,7 @@ export type GetSensorsProps = Omit<GetProps<Sensor[], DefaultErrorResponse, void
  */
 export const GetSensors = (props: GetSensorsProps) => (
   <Get<Sensor[], DefaultErrorResponse, void, void>
-    path={`/sensors/`}
+    path={`/api/sensors`}
     
     {...props}
   />
@@ -86,7 +86,7 @@ export type UseGetSensorsProps = Omit<UseGetProps<Sensor[], DefaultErrorResponse
 /**
  * Get the list of sensors
  */
-export const useGetSensors = (props: UseGetSensorsProps) => useGet<Sensor[], DefaultErrorResponse, void, void>(`/sensors/`, props);
+export const useGetSensors = (props: UseGetSensorsProps) => useGet<Sensor[], DefaultErrorResponse, void, void>(`/api/sensors`, props);
 
 
 export type PutSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>, "path" | "verb">;
@@ -99,7 +99,7 @@ export type PutSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityRespons
 export const PutSensor = (props: PutSensorProps) => (
   <Mutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>
     verb="PUT"
-    path={`/sensors/`}
+    path={`/api/sensors`}
     
     {...props}
   />
@@ -112,7 +112,7 @@ export type UsePutSensorProps = Omit<UseMutateProps<Sensor, UnprocessableEntityR
  * 
  * Each sensor contains an id, description and insertion timestamp
  */
-export const usePutSensor = (props: UsePutSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>("PUT", `/sensors/`, props);
+export const usePutSensor = (props: UsePutSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>("PUT", `/api/sensors`, props);
 
 
 export type GetConfigurationsProps = Omit<GetProps<Configuration[], DefaultErrorResponse, void, void>, "path">;
@@ -122,7 +122,7 @@ export type GetConfigurationsProps = Omit<GetProps<Configuration[], DefaultError
  */
 export const GetConfigurations = (props: GetConfigurationsProps) => (
   <Get<Configuration[], DefaultErrorResponse, void, void>
-    path={`/configurations/`}
+    path={`/api/configurations`}
     
     {...props}
   />
@@ -133,7 +133,7 @@ export type UseGetConfigurationsProps = Omit<UseGetProps<Configuration[], Defaul
 /**
  * Get the list of configurations
  */
-export const useGetConfigurations = (props: UseGetConfigurationsProps) => useGet<Configuration[], DefaultErrorResponse, void, void>(`/configurations/`, props);
+export const useGetConfigurations = (props: UseGetConfigurationsProps) => useGet<Configuration[], DefaultErrorResponse, void, void>(`/api/configurations`, props);
 
 
 export type PutConfigurationProps = Omit<MutateProps<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>, "path" | "verb">;
@@ -144,7 +144,7 @@ export type PutConfigurationProps = Omit<MutateProps<Configuration, Unprocessabl
 export const PutConfiguration = (props: PutConfigurationProps) => (
   <Mutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>
     verb="PUT"
-    path={`/configurations/`}
+    path={`/api/configurations`}
     
     {...props}
   />
@@ -155,7 +155,7 @@ export type UsePutConfigurationProps = Omit<UseMutateProps<Configuration, Unproc
 /**
  * Stores a new configuration
  */
-export const usePutConfiguration = (props: UsePutConfigurationProps) => useMutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>("PUT", `/configurations/`, props);
+export const usePutConfiguration = (props: UsePutConfigurationProps) => useMutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>("PUT", `/api/configurations`, props);
 
 
 export interface GetSensorPathParams {
@@ -166,7 +166,7 @@ export type GetSensorProps = Omit<GetProps<Sensor, DefaultErrorResponse, void, G
 
 export const GetSensor = ({sensor_id, ...props}: GetSensorProps) => (
   <Get<Sensor, DefaultErrorResponse, void, GetSensorPathParams>
-    path={`/sensor/${sensor_id}`}
+    path={`/api/sensor/${sensor_id}`}
     
     {...props}
   />
@@ -174,7 +174,7 @@ export const GetSensor = ({sensor_id, ...props}: GetSensorProps) => (
 
 export type UseGetSensorProps = Omit<UseGetProps<Sensor, DefaultErrorResponse, void, GetSensorPathParams>, "path"> & GetSensorPathParams;
 
-export const useGetSensor = ({sensor_id, ...props}: UseGetSensorProps) => useGet<Sensor, DefaultErrorResponse, void, GetSensorPathParams>((paramsInPath: GetSensorPathParams) => `/sensor/${paramsInPath.sensor_id}`, {  pathParams: { sensor_id }, ...props });
+export const useGetSensor = ({sensor_id, ...props}: UseGetSensorProps) => useGet<Sensor, DefaultErrorResponse, void, GetSensorPathParams>((paramsInPath: GetSensorPathParams) => `/api/sensor/${paramsInPath.sensor_id}`, {  pathParams: { sensor_id }, ...props });
 
 
 export interface PatchSensorPathParams {
@@ -186,7 +186,7 @@ export type PatchSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityRespo
 export const PatchSensor = ({sensor_id, ...props}: PatchSensorProps) => (
   <Mutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor, PatchSensorPathParams>
     verb="PATCH"
-    path={`/sensor/${sensor_id}`}
+    path={`/api/sensor/${sensor_id}`}
     
     {...props}
   />
@@ -194,7 +194,7 @@ export const PatchSensor = ({sensor_id, ...props}: PatchSensorProps) => (
 
 export type UsePatchSensorProps = Omit<UseMutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor, PatchSensorPathParams>, "path" | "verb"> & PatchSensorPathParams;
 
-export const usePatchSensor = ({sensor_id, ...props}: UsePatchSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor, PatchSensorPathParams>("PATCH", (paramsInPath: PatchSensorPathParams) => `/sensor/${paramsInPath.sensor_id}`, {  pathParams: { sensor_id }, ...props });
+export const usePatchSensor = ({sensor_id, ...props}: UsePatchSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor, PatchSensorPathParams>("PATCH", (paramsInPath: PatchSensorPathParams) => `/api/sensor/${paramsInPath.sensor_id}`, {  pathParams: { sensor_id }, ...props });
 
 
 export type DeleteSensorProps = Omit<MutateProps<void, DefaultErrorResponse, void, string, void>, "path" | "verb">;
@@ -202,7 +202,7 @@ export type DeleteSensorProps = Omit<MutateProps<void, DefaultErrorResponse, voi
 export const DeleteSensor = (props: DeleteSensorProps) => (
   <Mutate<void, DefaultErrorResponse, void, string, void>
     verb="DELETE"
-    path={`/sensor`}
+    path={`/api/sensor`}
     
     {...props}
   />
@@ -210,5 +210,5 @@ export const DeleteSensor = (props: DeleteSensorProps) => (
 
 export type UseDeleteSensorProps = Omit<UseMutateProps<void, DefaultErrorResponse, void, string, void>, "path" | "verb">;
 
-export const useDeleteSensor = (props: UseDeleteSensorProps) => useMutate<void, DefaultErrorResponse, void, string, void>("DELETE", `/sensor`, {   ...props });
+export const useDeleteSensor = (props: UseDeleteSensorProps) => useMutate<void, DefaultErrorResponse, void, string, void>("DELETE", `/api/sensor`, {   ...props });
 
