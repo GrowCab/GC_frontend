@@ -7,7 +7,7 @@ const App = () => {
 
     return <div className="App">
         <header className="App-header">
-            <p>Sensor list:</p>
+            <p>Sensors list:</p>
             <GetSensors children={(sensors, action) => {
                 return (
                     <div>
@@ -24,7 +24,11 @@ const App = () => {
                     <div> Intervals:
                         {intervals?.map((interval, idx) => {
                             return <div id={"interval-"+idx}>
-                                <p>{(interval.start_hour*100+interval.start_minute).toString().padStart(4, '0')} - {(interval.end_hour*100 + interval.end_minute).toString().padStart(4, '0')}</p>
+                                <p>{
+                                    String(interval.start_hour*100 + interval.start_minute).padStart(4, '0') +
+                                    " - " +
+                                    String(interval.end_hour*100 + interval.end_minute).padStart(4, '0')
+                                }</p>
                                 <p>{interval.expected_value}{interval.unit?.description}</p>
                             </div>
                         })}
