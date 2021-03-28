@@ -5,22 +5,22 @@ import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, Use
 export const SPEC_VERSION = "v1"; 
 export interface Chamber {
   timestamp?: string | null;
-  id?: number;
   description: string;
+  id?: number;
 }
 
 export interface Sensor {
   timestamp?: string | null;
-  id?: number;
-  chamber?: Chamber;
   description: string;
+  chamber?: Chamber;
+  id?: number;
 }
 
 export interface Sensor1 {
   timestamp?: string | null;
-  id?: number;
-  chamber?: Chamber;
   description?: string;
+  chamber?: Chamber;
+  id?: number;
 }
 
 export interface Error {
@@ -43,19 +43,36 @@ export interface Error {
 }
 
 export interface Configuration {
-  id?: number;
   description: string;
-  chamber_id?: number | null;
+  end?: string | null;
+  id?: number;
   start: string;
-  end: string;
+  chamber_id?: number | null;
 }
 
 export interface Configuration1 {
-  id?: number;
   description?: string;
-  chamber_id?: number | null;
+  end?: string | null;
+  id?: number;
   start?: string;
-  end?: string;
+  chamber_id?: number | null;
+}
+
+export interface Unit {
+  description: string;
+  id?: number;
+}
+
+export interface ExpectedMeasure {
+  expected_value: number;
+  start_hour: number;
+  end_hour: number;
+  configuration_id?: number | null;
+  unit_id?: number | null;
+  unit?: Unit;
+  id?: number;
+  end_minute: number;
+  start_minute: number;
 }
 
 /**
@@ -211,4 +228,23 @@ export const DeleteSensor = (props: DeleteSensorProps) => (
 export type UseDeleteSensorProps = Omit<UseMutateProps<void, DefaultErrorResponse, void, string, void>, "path" | "verb">;
 
 export const useDeleteSensor = (props: UseDeleteSensorProps) => useMutate<void, DefaultErrorResponse, void, string, void>("DELETE", `/api/sensor`, {   ...props });
+
+
+export interface GetChamberSchedulePathParams {
+  configuration_id: number
+}
+
+export type GetChamberScheduleProps = Omit<GetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
+
+export const GetChamberSchedule = ({configuration_id, ...props}: GetChamberScheduleProps) => (
+  <Get<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>
+    path={`/api/chamber_schedule/${configuration_id}`}
+    
+    {...props}
+  />
+);
+
+export type UseGetChamberScheduleProps = Omit<UseGetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
+
+export const useGetChamberSchedule = ({configuration_id, ...props}: UseGetChamberScheduleProps) => useGet<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>((paramsInPath: GetChamberSchedulePathParams) => `/api/chamber_schedule/${paramsInPath.configuration_id}`, {  pathParams: { configuration_id }, ...props });
 
