@@ -32,3 +32,13 @@ http://localhost:5000
 which should be running the backend, the port of the proxy can be modified in the
 `package.json` file, this needs to be adjusted to point at the gc_database api server
 
+# Automated generation
+
+To help maintain the frontend in step with the backend API, we can automatically generate our types from the swagger
+API description found in http://localhost:5000/doc/openapi.json. We can do this by running:
+
+```shell
+restful-react import --url http://localhost:5000/doc/openapi.json --output ./src/Api_spec/generated-types.tsx
+```
+
+This will write the `./src/Api_spec/generated-types.tsx` which will map our API for use in the frontend's react code.

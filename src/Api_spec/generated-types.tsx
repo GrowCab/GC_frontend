@@ -5,22 +5,22 @@ import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, Use
 export const SPEC_VERSION = "v1"; 
 export interface Chamber {
   timestamp?: string | null;
-  description: string;
   id?: number;
+  description: string;
 }
 
 export interface Sensor {
-  timestamp?: string | null;
-  description: string;
   chamber?: Chamber;
+  timestamp?: string | null;
   id?: number;
+  description: string;
 }
 
 export interface Sensor1 {
-  timestamp?: string | null;
-  description?: string;
   chamber?: Chamber;
+  timestamp?: string | null;
   id?: number;
+  description?: string;
 }
 
 export interface Error {
@@ -29,50 +29,48 @@ export interface Error {
    */
   message?: string;
   /**
-   * Error name
+   * Errors
    */
-  status?: string;
+  errors?: {[key: string]: any};
   /**
    * Error code
    */
   code?: number;
   /**
-   * Errors
+   * Error name
    */
-  errors?: {[key: string]: any};
+  status?: string;
+}
+
+export interface Unit {
+  id?: number;
+  description: string;
+}
+
+export interface ExpectedMeasure {
+  unit?: Unit;
+  expected_value: number;
+  id?: number;
+  unit_id?: number | null;
+  configuration_id?: number | null;
+  end_minute: number;
+  end_hour: number;
 }
 
 export interface Configuration {
-  description: string;
-  end?: string | null;
   id?: number;
-  start: string;
+  timestamp?: string | null;
+  expected_measure?: ExpectedMeasure[];
+  description: string;
   chamber_id?: number | null;
 }
 
 export interface Configuration1 {
+  id?: number;
+  timestamp?: string | null;
+  expected_measure?: ExpectedMeasure[];
   description?: string;
-  end?: string | null;
-  id?: number;
-  start?: string;
   chamber_id?: number | null;
-}
-
-export interface Unit {
-  description: string;
-  id?: number;
-}
-
-export interface ExpectedMeasure {
-  expected_value: number;
-  start_hour: number;
-  end_hour: number;
-  configuration_id?: number | null;
-  unit_id?: number | null;
-  unit?: Unit;
-  id?: number;
-  end_minute: number;
-  start_minute: number;
 }
 
 /**
@@ -231,20 +229,20 @@ export const useDeleteSensor = (props: UseDeleteSensorProps) => useMutate<void, 
 
 
 export interface GetChamberSchedulePathParams {
-  configuration_id: number
+  chamber_id: number
 }
 
-export type GetChamberScheduleProps = Omit<GetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
+export type GetChamberScheduleProps = Omit<GetProps<Configuration, DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
 
-export const GetChamberSchedule = ({configuration_id, ...props}: GetChamberScheduleProps) => (
-  <Get<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>
-    path={`/api/chamber_schedule/${configuration_id}`}
+export const GetChamberSchedule = ({chamber_id, ...props}: GetChamberScheduleProps) => (
+  <Get<Configuration, DefaultErrorResponse, void, GetChamberSchedulePathParams>
+    path={`/api/chamber_schedule/${chamber_id}`}
     
     {...props}
   />
 );
 
-export type UseGetChamberScheduleProps = Omit<UseGetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
+export type UseGetChamberScheduleProps = Omit<UseGetProps<Configuration, DefaultErrorResponse, void, GetChamberSchedulePathParams>, "path"> & GetChamberSchedulePathParams;
 
-export const useGetChamberSchedule = ({configuration_id, ...props}: UseGetChamberScheduleProps) => useGet<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberSchedulePathParams>((paramsInPath: GetChamberSchedulePathParams) => `/api/chamber_schedule/${paramsInPath.configuration_id}`, {  pathParams: { configuration_id }, ...props });
+export const useGetChamberSchedule = ({chamber_id, ...props}: UseGetChamberScheduleProps) => useGet<Configuration, DefaultErrorResponse, void, GetChamberSchedulePathParams>((paramsInPath: GetChamberSchedulePathParams) => `/api/chamber_schedule/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
 
