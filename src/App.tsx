@@ -25,7 +25,7 @@ const App = () => {
           <div key={configuration?.id}> Intervals:
             {configuration?.expected_measure?.map((expected_measure, idx, expected_measures) => (
               //<ExpectedMeassureInterval expectedMeasure={expected_measure} idx={idx}  expectedMeasures={expected_measures} />
-              <ExpectedMeassureInterval   idx={idx} />
+              <ExpectedMeassureInterval  expectedMeasure={expected_measure} idx={idx}  expectedMeasures={expected_measures} />
               )
             )}
           </div>
