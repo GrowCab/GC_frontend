@@ -8,17 +8,20 @@ const App = () => {
     <header className='App-header'>
       <p>Sensors list:</p>
       <GetSensors children={
-        (sensors, action) => (
-          <div>
-            {sensors?.map((sensor, idx) => (
-              <p>{sensor.description}</p>
-            ))}
-          </div>
-        )}/>
+        (sensors, action) => {
+          return (action.loading) ? <p>loading...</p> :
+            <div>
+              {sensors?.map((sensor, idx) => (
+                <p key={sensor.id}>{sensor.description}</p>
+              ))}
+            </div>
+        }
+      }/>
     </header>
     <div> Chamber 1 schedule:
-      <GetChamberSchedule chamber_id={1} children={(configuration, action) => (
-          <div> Intervals:
+      <GetChamberSchedule chamber_id={1} children={(configuration, action) => {
+        return (action.loading) ? <p>loading...</p> :
+          <div key={configuration?.id}> Intervals:
             {configuration?.expected_measure?.map((expected_measure, idx, expected_measures) => (
               <div id={'interval-' + idx} key={expected_measure.id}>
                    {idx===0 ?
@@ -29,7 +32,7 @@ const App = () => {
                  </div>)
             )}
           </div>
-        )}/>
+      }}/>
     </div>
   </div>
 
