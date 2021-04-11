@@ -1,6 +1,7 @@
 import React from 'react'
 import './App.css'
 import { GetChamberSchedule, GetSensors } from './Api_spec/generated-types'
+import ExpectedMeassureInterval from './ExpectedMeassureInterval'
 
 const App = () => {
 
@@ -23,17 +24,14 @@ const App = () => {
         return (action.loading) ? <p>loading...</p> :
           <div key={configuration?.id}> Intervals:
             {configuration?.expected_measure?.map((expected_measure, idx, expected_measures) => (
-              <div id={'interval-' + idx} key={expected_measure.id}>
-                   {idx===0 ?
-                     '0'.padStart(4,'0') :
-                     String(expected_measures[idx-1].end_hour * 100 + expected_measures[idx-1].end_minute).padStart(4, '0')}
-                   -{String(expected_measure.end_hour * 100 + expected_measure.end_minute).padStart(4, '0')}
-                   <span>=</span>{expected_measure.expected_value}{expected_measure.unit?.description}
-                 </div>)
+              //<ExpectedMeassureInterval expectedMeasure={expected_measure} idx={idx}  expectedMeasures={expected_measures} />
+              <ExpectedMeassureInterval   idx={idx} />
+              )
             )}
           </div>
       }}/>
     </div>
+    
   </div>
 
 }
