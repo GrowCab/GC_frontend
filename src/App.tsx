@@ -70,6 +70,12 @@ const App: React.FC = () => {
       setEditableChamberSchedule([...newSchedule]);
   }
 
+  useEffect( () => {
+    setInterval(() => {
+      console.log("TODO: Load/Reload sensor data...");
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     if (schedule) {
       setEditableChamberSchedule([...schedule])
@@ -121,7 +127,7 @@ const App: React.FC = () => {
           schedule?.filter((expected_measure) => (
             expected_measure.unit_id === unit.id
           )).map((expected_measure, idx, expected_measures) => (
-            <EditableInterval value_change={() => (1)} expected_measure={expected_measure} idx={idx} key={expected_measure.id}
+            <EditableInterval expected_measure={expected_measure} idx={idx} key={expected_measure.id}
                               expected_measures={expected_measures} />
           ))
         ))}
