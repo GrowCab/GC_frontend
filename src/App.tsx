@@ -7,11 +7,13 @@ function getTimeString(hour: number, minute: number) {
   return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0')
 }
 
-const EditableInterval = ({ value_change, expected_measure, idx, expected_measures }:
-                            {value_change:any, expected_measure: ExpectedMeasure, idx: number, expected_measures: ExpectedMeasure[] }) => {
-
-  const [expected_value, setExpectedValue] = React.useState(expected_measure.expected_value)
-  const [end_hour, setEndHour] = React.useState(getTimeString(expected_measure.end_hour, expected_measure.end_minute))
+const EditableInterval = ({ time_change, value_change, expected_measure, idx, expected_measures }:
+                            {
+                              time_change?: (id: number | undefined, new_value: String) =>void,
+                              value_change?:(id: number | undefined, new_value: number)=>void,
+                              expected_measure: ExpectedMeasure,
+                              idx: number,
+                              expected_measures: ExpectedMeasure[] }) => {
 
   return (
     <div id={'interval-' + idx} key={idx}>
@@ -21,15 +23,15 @@ const EditableInterval = ({ value_change, expected_measure, idx, expected_measur
       -
       <input type='time'
              onChange={e => {
-               setEndHour(e.target.value)
+               if (time_change)
+                 time_change(expected_measure.id, e.target.value)
              }}
-             value={end_hour} />
+             value={getTimeString(expected_measure.end_hour, expected_measure.end_minute)} />
       <span>=</span>
       <input type='text' onChange={e => {
-        console.log(expected_measure.id)
-        value_change(expected_measure.id, Number(e.target.value))
-        setExpectedValue(Number(e.target.value))
-      }} value={expected_value} /> {expected_measure.unit?.description}
+        if (value_change)
+          value_change(expected_measure.id, Number(e.target.value))
+      }} value={expected_measure.expected_value} /> {expected_measure.unit?.description}
     </div>
   )
 }
@@ -37,12 +39,28 @@ const EditableInterval = ({ value_change, expected_measure, idx, expected_measur
 const App: React.FC = () => {
   const schedule = useGetChamberSchedule({ chamber_id: 1 }).data?.expected_measure
 
-  const handleValueChange = (id: number, new_value: number) => {
-    const newSchedule = schedule?.map((expected) => {
+  const handleValueChange = (id: number|undefined, new_value: number) => {
+    const newSchedule = editableChamberSchedule?.map((expected) => {
       if (expected.id === id) {
         const updatedItem: ExpectedMeasure = {
           ...expected,
           expected_value: new_value
+        }
+        return updatedItem;
+      }
+      return expected;
+    });
+    if (newSchedule)
+      setEditableChamberSchedule([...newSchedule]);
+  }
+
+  const handleTimeChange = (id: number|undefined, new_value: String) => {
+    const newSchedule = editableChamberSchedule?.map((expected) => {
+      if (expected.id === id) {
+        const updatedItem: ExpectedMeasure = {
+          ...expected,
+          end_minute: Number(new_value.slice(3,5)),
+          end_hour: Number(new_value.slice(0, 2))
         }
         return updatedItem;
       }
@@ -85,8 +103,12 @@ const App: React.FC = () => {
                     expected_measure.unit_id === unit.id
                   ),
                 ).map((expected_measure, idx, expected_measures) => (
-                    <EditableInterval value_change={handleValueChange} expected_measure={expected_measure} idx={idx} key={expected_measure.id}
-                                      expected_measures={expected_measures} />
+                    <EditableInterval time_change={handleTimeChange}
+                                      value_change={handleValueChange}
+                                      expected_measure={expected_measure}
+                                      idx={idx}
+                                      key={expected_measure.id}
+                                      expected_measures={expected_measures}/>
                   ),
                 )
               ),
