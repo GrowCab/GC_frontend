@@ -1,6 +1,5 @@
 import { ExpectedMeasure } from './Api_spec/generated-types'
 import React from 'react'
-import { start } from 'repl'
 
 function getTimeString(hour: number, minute: number) {
   return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0')
@@ -15,6 +14,9 @@ export const EditableInterval = ({ add_interval, time_change, value_change, expe
                                      idx: number,
                                      expected_measures: ExpectedMeasure[]
                                    }) => {
+
+  const start_min = (idx===0) ? 0 : expected_measures[idx - 1].end_minute;
+  const start_hour = (idx===0) ? 0 : expected_measures[idx - 1].end_hour;
 
   return (
     <div id={'interval-' + idx} key={idx}>
@@ -33,10 +35,14 @@ export const EditableInterval = ({ add_interval, time_change, value_change, expe
         if (value_change)
           value_change(expected_measure.id, Number(e.target.value))
       }} value={expected_measure.expected_value} /> {expected_measure.unit?.description}
-      <button onClick={e => {
-        const start_min = (idx===0) ? 0 : expected_measures[idx - 1].end_minute;
-        const start_hour = (idx===0) ? 0 : expected_measures[idx - 1].end_hour;
-        const mid_minutes = Math.round(((expected_measure.end_hour - start_hour) * 60 + (expected_measure.end_minute - start_min))/2);
+      <button
+        disabled={
+          ( expected_measure.end_hour*100+expected_measure.end_minute -
+          start_hour*100+start_min < 15)
+        }
+        onClick={e => {
+        const mid_minutes = Math.round((start_hour * 60) + start_min) +
+          Math.round(((expected_measure.end_hour - start_hour) * 60 + (expected_measure.end_minute - start_min))/2);
         if (add_interval)
           add_interval(expected_measure, mid_minutes)
       }}>+</button>

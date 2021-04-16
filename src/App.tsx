@@ -20,7 +20,7 @@ const App: React.FC = () => {
     const mid_hour = Math.floor(mid_minutes / 60);
     const mid_min = mid_minutes - mid_hour*60;
 
-    const insertionPoint = editableChamberSchedule?.reverse().findIndex((expected) => {
+    const insertionPoint = editableChamberSchedule?.findIndex((expected) => {
       return expected.unit_id === expected_measure.unit_id &&
         mid_hour*100+mid_min < expected.end_hour*100+expected.end_minute;
     });
