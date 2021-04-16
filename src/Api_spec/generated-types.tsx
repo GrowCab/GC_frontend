@@ -9,73 +9,89 @@ export interface ChamberSensor {
 
 export interface Chamber {
   timestamp?: string | null;
-  id?: number;
   description: string;
+  id?: number;
   sensors?: ChamberSensor[];
 }
 
 export interface Sensor {
-  timestamp?: string | null;
-  id?: number;
-  description: string;
   chamber?: Chamber;
+  description: string;
+  id?: number;
+  timestamp?: string | null;
 }
 
 export interface Sensor1 {
-  timestamp?: string | null;
-  id?: number;
-  description?: string;
   chamber?: Chamber;
+  description?: string;
+  id?: number;
+  timestamp?: string | null;
 }
 
 export interface Error {
-  /**
-   * Errors
-   */
-  errors?: {[key: string]: any};
   /**
    * Error code
    */
   code?: number;
   /**
-   * Error name
+   * Errors
    */
-  status?: string;
+  errors?: {[key: string]: any};
   /**
    * Error message
    */
   message?: string;
+  /**
+   * Error name
+   */
+  status?: string;
 }
 
 export interface Unit {
-  id?: number;
   description: string;
+  id?: number;
 }
 
 export interface ExpectedMeasure {
+  id?: number;
+  configuration_id?: number | null;
+  expected_value: number;
   unit_id?: number | null;
+  unit?: Unit;
   end_hour: number;
   end_minute: number;
-  unit?: Unit;
-  id?: number;
-  expected_value: number;
-  configuration_id?: number | null;
 }
 
 export interface Configuration {
   id?: number;
-  description: string;
-  expected_measure?: ExpectedMeasure[];
-  timestamp?: string | null;
   chamber_id?: number | null;
+  expected_measure?: ExpectedMeasure[];
+  description: string;
+  timestamp?: string | null;
 }
 
 export interface Configuration1 {
   id?: number;
-  description?: string;
-  expected_measure?: ExpectedMeasure[];
-  timestamp?: string | null;
   chamber_id?: number | null;
+  expected_measure?: ExpectedMeasure[];
+  description?: string;
+  timestamp?: string | null;
+}
+
+export interface SensorUnit {
+  unit?: Unit;
+  min?: number | null;
+  id?: number;
+  max?: number | null;
+}
+
+export interface Measure {
+  current_value: number;
+  id?: number;
+  sensor_unit_id?: number | null;
+  sensor_unit?: SensorUnit;
+  chamber_sensor_id?: number | null;
+  timestamp?: string | null;
 }
 
 /**
@@ -252,6 +268,26 @@ export type UseGetChamberScheduleProps = Omit<UseGetProps<Configuration, Default
 export const useGetChamberSchedule = ({chamber_id, ...props}: UseGetChamberScheduleProps) => useGet<Configuration, DefaultErrorResponse, void, GetChamberSchedulePathParams>((paramsInPath: GetChamberSchedulePathParams) => `/api/chamber_schedule/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
 
 
+export interface GetChamberScheduleUnitPathParams {
+  chamber_id: number;
+  unit_id: number
+}
+
+export type GetChamberScheduleUnitProps = Omit<GetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberScheduleUnitPathParams>, "path"> & GetChamberScheduleUnitPathParams;
+
+export const GetChamberScheduleUnit = ({chamber_id, unit_id, ...props}: GetChamberScheduleUnitProps) => (
+  <Get<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberScheduleUnitPathParams>
+    path={`/api/chamber_schedule_unit/${chamber_id}/${unit_id}`}
+    
+    {...props}
+  />
+);
+
+export type UseGetChamberScheduleUnitProps = Omit<UseGetProps<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberScheduleUnitPathParams>, "path"> & GetChamberScheduleUnitPathParams;
+
+export const useGetChamberScheduleUnit = ({chamber_id, unit_id, ...props}: UseGetChamberScheduleUnitProps) => useGet<ExpectedMeasure[], DefaultErrorResponse, void, GetChamberScheduleUnitPathParams>((paramsInPath: GetChamberScheduleUnitPathParams) => `/api/chamber_schedule_unit/${paramsInPath.chamber_id}/${paramsInPath.unit_id}`, {  pathParams: { chamber_id, unit_id }, ...props });
+
+
 export type GetChambersProps = Omit<GetProps<Chamber[], DefaultErrorResponse, void, void>, "path">;
 
 /**
@@ -260,7 +296,7 @@ export type GetChambersProps = Omit<GetProps<Chamber[], DefaultErrorResponse, vo
 export const GetChambers = (props: GetChambersProps) => (
   <Get<Chamber[], DefaultErrorResponse, void, void>
     path={`/api/chambers`}
-
+    
     {...props}
   />
 );
@@ -280,14 +316,14 @@ export interface GetChamberPathParams {
 export type GetChamberProps = Omit<GetProps<Chamber, DefaultErrorResponse, void, GetChamberPathParams>, "path"> & GetChamberPathParams;
 
 /**
- * Get the
+ * Get the chamber and related objects
  * :param chamber_id: ID of the chamber
  * :return: Returns a Chamber object
  */
 export const GetChamber = ({chamber_id, ...props}: GetChamberProps) => (
   <Get<Chamber, DefaultErrorResponse, void, GetChamberPathParams>
     path={`/api/chamber/${chamber_id}`}
-
+    
     {...props}
   />
 );
@@ -295,11 +331,40 @@ export const GetChamber = ({chamber_id, ...props}: GetChamberProps) => (
 export type UseGetChamberProps = Omit<UseGetProps<Chamber, DefaultErrorResponse, void, GetChamberPathParams>, "path"> & GetChamberPathParams;
 
 /**
- * Get the
+ * Get the chamber and related objects
  * :param chamber_id: ID of the chamber
  * :return: Returns a Chamber object
  */
 export const useGetChamber = ({chamber_id, ...props}: UseGetChamberProps) => useGet<Chamber, DefaultErrorResponse, void, GetChamberPathParams>((paramsInPath: GetChamberPathParams) => `/api/chamber/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+
+
+export interface GetChamberSensorsPathParams {
+  chamber_id: number
+}
+
+export type GetChamberSensorsProps = Omit<GetProps<SensorUnit[], DefaultErrorResponse, void, GetChamberSensorsPathParams>, "path"> & GetChamberSensorsPathParams;
+
+/**
+ * Get the sensors for a chamber
+ * :param chamber_id:
+ * :return:
+ */
+export const GetChamberSensors = ({chamber_id, ...props}: GetChamberSensorsProps) => (
+  <Get<SensorUnit[], DefaultErrorResponse, void, GetChamberSensorsPathParams>
+    path={`/api/chamber_sensors/${chamber_id}`}
+    
+    {...props}
+  />
+);
+
+export type UseGetChamberSensorsProps = Omit<UseGetProps<SensorUnit[], DefaultErrorResponse, void, GetChamberSensorsPathParams>, "path"> & GetChamberSensorsPathParams;
+
+/**
+ * Get the sensors for a chamber
+ * :param chamber_id:
+ * :return:
+ */
+export const useGetChamberSensors = ({chamber_id, ...props}: UseGetChamberSensorsProps) => useGet<SensorUnit[], DefaultErrorResponse, void, GetChamberSensorsPathParams>((paramsInPath: GetChamberSensorsPathParams) => `/api/chamber_sensors/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
 
 
 export interface GetChamberUnitsPathParams {
@@ -310,7 +375,7 @@ export type GetChamberUnitsProps = Omit<GetProps<Unit[], DefaultErrorResponse, v
 
 /**
  * Get the units available for this chamber
- *
+ * 
  * This is useful for understanding which dials to present but also which values to use for filtering/separating
  * the ExpectedMeasure(s) of a Configuration for a Chamber
  * :param chamber_id: ID of the chamber
@@ -319,7 +384,7 @@ export type GetChamberUnitsProps = Omit<GetProps<Unit[], DefaultErrorResponse, v
 export const GetChamberUnits = ({chamber_id, ...props}: GetChamberUnitsProps) => (
   <Get<Unit[], DefaultErrorResponse, void, GetChamberUnitsPathParams>
     path={`/api/chamber_units/${chamber_id}`}
-
+    
     {...props}
   />
 );
@@ -328,11 +393,30 @@ export type UseGetChamberUnitsProps = Omit<UseGetProps<Unit[], DefaultErrorRespo
 
 /**
  * Get the units available for this chamber
- *
+ * 
  * This is useful for understanding which dials to present but also which values to use for filtering/separating
  * the ExpectedMeasure(s) of a Configuration for a Chamber
  * :param chamber_id: ID of the chamber
  * :return: Returns a list of Unit objects
  */
 export const useGetChamberUnits = ({chamber_id, ...props}: UseGetChamberUnitsProps) => useGet<Unit[], DefaultErrorResponse, void, GetChamberUnitsPathParams>((paramsInPath: GetChamberUnitsPathParams) => `/api/chamber_units/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+
+
+export interface GetChamberStatusPathParams {
+  chamber_id: number
+}
+
+export type GetChamberStatusProps = Omit<GetProps<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
+
+export const GetChamberStatus = ({chamber_id, ...props}: GetChamberStatusProps) => (
+  <Get<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>
+    path={`/api/chamber_status/${chamber_id}`}
+    
+    {...props}
+  />
+);
+
+export type UseGetChamberStatusProps = Omit<UseGetProps<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
+
+export const useGetChamberStatus = ({chamber_id, ...props}: UseGetChamberStatusProps) => useGet<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>((paramsInPath: GetChamberStatusPathParams) => `/api/chamber_status/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
 

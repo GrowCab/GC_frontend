@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react'
 import './App.css'
 import {
   ExpectedMeasure,
-  GetSensors,
-  useGetChamberSchedule,
+  GetSensors, Measure,
+  useGetChamberSchedule, useGetChamberStatus,
   useGetChamberUnits,
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 
 const App: React.FC = () => {
   const chamberSchedule = useGetChamberSchedule({ chamber_id: 1 }).data?.expected_measure
-  // TODO: const sensorStatus = useGetSensorStatus({chamber_id: 1}).data? ...
+
+  const [editableChamberSchedule, setEditableChamberSchedule] = useState<ExpectedMeasure[] | null>(null)
+  const [sensor_status, setSensorStatus] = useState<Measure[] | null>(null);
+  const chamberUnits = useGetChamberUnits({ chamber_id: 1 })
 
   const handleAddInterval = (expected_measure: ExpectedMeasure, mid_minutes: number) => {
     let newSchedule: ExpectedMeasure[] = [];
@@ -72,13 +75,12 @@ const App: React.FC = () => {
       setEditableChamberSchedule([...newSchedule]);
   }
 
+  const { data, loading, refetch } = useGetChamberStatus({chamber_id: 1})
+
   // Setup sensor refreshing
   useEffect( () => {
-    setInterval(() => {
-      console.log("TODO: Load/Reload sensor data...");
-      // TODO: setSensorStatus([...sensor_status]);
-    }, 1000);
-  }, [/*TODO: This effect should depend on something like -> sensors_status*/]);
+    setInterval(() => {return setSensorStatus(data)}, 1000);
+  }, [data]);
 
 
   // Load the editableChamberSchedule when the chamberSchedule has been reloaded
@@ -88,12 +90,8 @@ const App: React.FC = () => {
     }
   }, [chamberSchedule])
 
-  const [editableChamberSchedule, setEditableChamberSchedule] = useState<ExpectedMeasure[] | null>(null)
-  // TODO:
-  //  const [sensor_status, setSensorStatus] = useState<SensorStatus[] | null>(null);
-  const chamberUnits = useGetChamberUnits({ chamber_id: 1 })
-
-  return <div className='App'>
+  return (
+    <div className='App'>
     <header className='App-header'>
       <p>Sensors list:</p>
       <GetSensors children={
@@ -107,6 +105,14 @@ const App: React.FC = () => {
         }
       } />
     </header>
+      <div>
+        <h1>Chamber 1 status:</h1>
+        {
+          sensor_status?.map((value) => (
+            <p>{value.current_value} {value.sensor_unit?.unit?.description}</p>
+          ))
+        }
+      </div>
     <div> <h1>Chamber 1 schedule:</h1>
       <h2>Editable schedule:</h2>
       {
@@ -143,6 +149,7 @@ const App: React.FC = () => {
         ))}
     </div>
   </div>
+  )
 
 }
 
