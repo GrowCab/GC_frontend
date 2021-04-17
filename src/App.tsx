@@ -8,12 +8,26 @@ import {
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 
+const StatusDisplay = ({ sensor_status }: { sensor_status: Measure[] | null }) => (
+  <div>
+    {sensor_status?.map((status, idx) => (
+      <p key={'status-'+idx}>{status.current_value} {status.sensor_unit?.unit?.description}</p>
+    ))}
+  </div>
+)
+
+
 const App: React.FC = () => {
   const chamberSchedule = useGetChamberSchedule({ chamber_id: 1 }).data?.expected_measure
+  const [edited, setEdited] = useState<Boolean>(false)
 
   const [editableChamberSchedule, setEditableChamberSchedule] = useState<ExpectedMeasure[] | null>(null)
-  const [sensor_status, setSensorStatus] = useState<Measure[] | null>(null);
   const chamberUnits = useGetChamberUnits({ chamber_id: 1 })
+
+  // const storeNewConfiguration = () => {
+    // Remove unneeded parts of the editableChamberSchedule object
+    // Submit store request over API
+  // }
 
   const handleAddInterval = (expected_measure: ExpectedMeasure, mid_minutes: number) => {
     let newSchedule: ExpectedMeasure[] = [];
@@ -42,6 +56,7 @@ const App: React.FC = () => {
     }
 
     setEditableChamberSchedule([...newSchedule]);
+    setEdited(true);
   }
 
   const handleValueChange = (id: number|undefined, new_value: number) => {
@@ -55,8 +70,10 @@ const App: React.FC = () => {
       }
       return expected;
     });
-    if (newSchedule)
+    if (newSchedule) {
       setEditableChamberSchedule([...newSchedule]);
+      setEdited(true);
+    }
   }
 
   const handleTimeChange = (id: number|undefined, new_value: String) => {
@@ -71,17 +88,24 @@ const App: React.FC = () => {
       }
       return expected;
     });
-    if (newSchedule)
+    if (newSchedule) {
       setEditableChamberSchedule([...newSchedule]);
+      setEdited(true);
+    }
   }
 
-  const { data, loading, refetch } = useGetChamberStatus({chamber_id: 1})
+  const { data, refetch, error } = useGetChamberStatus({chamber_id: 1})
 
-  // Setup sensor refreshing
-  useEffect( () => {
-    setInterval(() => {return setSensorStatus(data)}, 1000);
-  }, [data]);
-
+  useEffect(() => {
+  // if (error) {
+  // } else
+  if (data) {
+    const timerId = window.setTimeout(() => refetch(), 1000);
+    return () => window.clearTimeout(timerId);
+  } else {
+    return;
+  }
+}, [data, refetch, error]);
 
   // Load the editableChamberSchedule when the chamberSchedule has been reloaded
   useEffect(() => {
@@ -107,11 +131,7 @@ const App: React.FC = () => {
     </header>
       <div>
         <h1>Chamber 1 status:</h1>
-        {
-          sensor_status?.map((value) => (
-            <p>{value.current_value} {value.sensor_unit?.unit?.description}</p>
-          ))
-        }
+        <StatusDisplay sensor_status={data}/>
       </div>
     <div> <h1>Chamber 1 schedule:</h1>
       <h2>Editable schedule:</h2>
@@ -147,6 +167,7 @@ const App: React.FC = () => {
                               expected_measures={expected_measures} />
           ))
         ))}
+      <button disabled={!edited} /*onClick={storeNewConfiguration}*/>Save changes</button>
     </div>
   </div>
   )
