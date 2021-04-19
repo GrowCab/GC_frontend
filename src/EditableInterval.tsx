@@ -19,7 +19,7 @@ export const EditableInterval = ({ add_interval, time_change, value_change, expe
   const start_hour = (idx===0) ? 0 : expected_measures[idx - 1].end_hour;
 
   return (
-    <div id={'interval-' + idx} key={idx}>
+    <div id={'interval-' + idx} key={expected_measure.id}>
       {idx === 0 ? getTimeString(0, 0) :
         getTimeString(expected_measures[idx - 1].end_hour, expected_measures[idx - 1].end_minute)
       }
