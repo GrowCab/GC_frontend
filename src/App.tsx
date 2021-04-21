@@ -11,7 +11,6 @@ import {
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 import { ConfigurationStoreModal } from './ConfigurationStoreModal'
-import { StatusDisplay } from './StatusDisplay'
 import { DisplayDials } from './DisplayDials'
 
 
@@ -179,19 +178,18 @@ const App: React.FC = () => {
       <div>
         <h1>Chamber 1 status:</h1>
         {
-          chamberUnits.data?.map((unit) => (
+          chamberUnits.data?.map((unit, idx) => (
             (editableChamberSchedule) ?
-              <DisplayDials expected_measures={
+              <DisplayDials key={'dial-'+idx} expected_measures={
                 editableChamberSchedule?.filter(
                   (expected_measure) => (expected_measure.unit_id === unit.id)
                 )} current_measure={data?.find((unit_measure) => (
                   unit_measure.sensor_unit?.unit?.id === unit.id
               ))}
               /> :
-              <p>loading...</p>)
+              <p key={'ldial' + idx}>loading...</p>)
           )
         }
-        <StatusDisplay sensor_status={data} expected_measures={chamberSchedule || []}/>
       </div>
     <div> <h1>Chamber 1 schedule:</h1>
       <h2>Editable schedule:</h2>

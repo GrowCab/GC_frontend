@@ -31,7 +31,7 @@ export const DisplayDials = ({ expected_measures, current_measure }: {expected_m
           {pieHelper(expected_measures).map((datum, i) => {
             const [x, y] = arcGenerator.centroid(datum);
             return (
-              <g>
+              <g key={'arc-'+datum.data.unit_id+'-'+i}>
                 <path d={arcGenerator(datum) || ""} fill={interpolateBlues(datum.data.expected_value/75)}/>
                 <text textAnchor={"middle"} fill={"#000000"}
                       transform={`translate(${x}, ${y})`}>
