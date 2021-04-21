@@ -178,7 +178,19 @@ const App: React.FC = () => {
     </header>
       <div>
         <h1>Chamber 1 status:</h1>
-        <DisplayDials expected_measures={chamberSchedule || []} />
+        {
+          chamberUnits.data?.map((unit) => (
+            (editableChamberSchedule) ?
+              <DisplayDials expected_measures={
+                editableChamberSchedule?.filter(
+                  (expected_measure) => (expected_measure.unit_id === unit.id)
+                )} current_measure={data?.find((unit_measure) => (
+                  unit_measure.sensor_unit?.unit?.id === unit.id
+              ))}
+              /> :
+              <p>loading...</p>)
+          )
+        }
         <StatusDisplay sensor_status={data} expected_measures={chamberSchedule || []}/>
       </div>
     <div> <h1>Chamber 1 schedule:</h1>
