@@ -3,27 +3,16 @@ import './App.css'
 import {
   Configuration1,
   ExpectedMeasure,
-  GetSensors, Measure,
-  useGetChamberSchedule, useGetChamberStatus,
-  useGetChamberUnits, usePutConfiguration,
+  GetSensors,
+  useGetChamberSchedule,
+  useGetChamberStatus,
+  useGetChamberUnits,
+  usePutConfiguration,
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 import { ConfigurationStoreModal } from './ConfigurationStoreModal'
-
-/**
- * Component to render the current chamber status (Sensor values) and the current configuration
- * (ExpectedMeasures)
- *
- * TODO: Pass in the ExpectedMeasures and add the rendering of the dials
- * @param sensor_status
- */
-const StatusDisplay = ({ sensor_status }: { sensor_status: Measure[] | null }) => (
-  <div>
-    {sensor_status?.map((status, idx) => (
-      <p key={'status-'+idx}>{status.current_value} {status.sensor_unit?.unit?.description}</p>
-    ))}
-  </div>
-)
+import { StatusDisplay } from './StatusDisplay'
+import { DisplayDials } from './DisplayDials'
 
 
 const App: React.FC = () => {
@@ -189,7 +178,8 @@ const App: React.FC = () => {
     </header>
       <div>
         <h1>Chamber 1 status:</h1>
-        <StatusDisplay sensor_status={data}/>
+        <DisplayDials expected_measures={chamberSchedule || []} />
+        <StatusDisplay sensor_status={data} expected_measures={chamberSchedule || []}/>
       </div>
     <div> <h1>Chamber 1 schedule:</h1>
       <h2>Editable schedule:</h2>
