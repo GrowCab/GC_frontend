@@ -22,7 +22,7 @@ export const DisplayDials = ({ expected_measures, current_measure }: {expected_m
 
   const translateHelper = `translate(${svgWidth/2}, ${svgHeight/2})`
   const t = new Date()
-  const arrowAngle = (((t.getHours()*60+t.getSeconds())/1440)*360*Math.PI/180)-Math.PI/2;
+  const arrowAngle = (((t.getHours()*60+t.getMinutes())/1440)*360*Math.PI/180)-Math.PI/2;
 
   return (
     <div>
