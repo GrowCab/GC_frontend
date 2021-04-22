@@ -176,7 +176,6 @@ const App: React.FC = () => {
         } />
       </header>
       <div>
-        <h1>Chamber 1 status:</h1>
         <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>{
           chamberUnits.data?.map((unit, idx) => (
             (chamberSchedule) ?
@@ -192,30 +191,37 @@ const App: React.FC = () => {
         }
         </div>
       </div>
-      <div><h1>Chamber 1 schedule:</h1>
-        <h2>Editable schedule:</h2>
-        {
-          (chamberUnits.loading) ? <p>loading...</p> :
-            (
-              chamberUnits.data?.map((unit) => (
-                  editableChamberSchedule?.filter((expected_measure) => (
-                      expected_measure.unit_id === unit.id
-                    ),
-                  ).map((expected_measure, idx, expected_measures) => (
-                      <EditableInterval
-                        time_change={handleTimeChange}
-                        value_change={handleValueChange}
-                        add_interval={handleAddInterval}
-                        expected_measure={expected_measure}
-                        idx={idx}
-                        key={expected_measure.id}
-                        expected_measures={expected_measures} />
-                    ),
-                  )
-                ),
-              )
-            )
-        }
+      <div>
+        {/*<h1>Chamber 1 schedule:</h1>*/}
+        {/*<h2>Editable schedule:</h2>*/}
+        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>
+          {
+            (chamberUnits.loading) ? <p>loading...</p> :
+              (
+                chamberUnits.data?.map((unit, idx) => {
+                    const intervals = (
+                      editableChamberSchedule?.filter((expected_measure) => (
+                        expected_measure.unit_id === unit.id
+                      )).map((expected_measure, idx, expected_measures) => (
+                        <EditableInterval
+                          time_change={handleTimeChange}
+                          value_change={handleValueChange}
+                          add_interval={handleAddInterval}
+                          expected_measure={expected_measure}
+                          idx={idx}
+                          key={expected_measure.id}
+                          expected_measures={expected_measures} />
+                      ))
+                    )
+                    return (
+                      <div key={'editable_interval-' + idx}>
+                        {intervals}
+                      </div>
+                    )
+                  }
+                ))
+          }
+        </div>
         <button disabled={!edited} onClick={openModal}>Save changes</button>
       </div>
       {
@@ -224,7 +230,6 @@ const App: React.FC = () => {
       }
     </div>
   )
-
 }
 
 export default App
