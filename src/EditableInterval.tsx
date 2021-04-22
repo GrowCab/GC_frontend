@@ -5,9 +5,10 @@ function getTimeString(hour: number, minute: number) {
   return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0')
 }
 
-export const EditableInterval = ({ add_interval, time_change, value_change, expected_measure, idx, expected_measures }:
+export const EditableInterval = ({ add_interval, del_interval, time_change, value_change, expected_measure, idx, expected_measures }:
                                    {
                                      add_interval?: (id: ExpectedMeasure, mid_minutes: number) => void,
+                                     del_interval?: (id: ExpectedMeasure) => void,
                                      time_change?: (id: number | undefined, new_value: String) => void,
                                      value_change?: (id: number | undefined, new_value: number) => void,
                                      expected_measure: ExpectedMeasure,
@@ -46,6 +47,10 @@ export const EditableInterval = ({ add_interval, time_change, value_change, expe
         if (add_interval)
           add_interval(expected_measure, mid_minutes)
       }}>+</button>
+      <button disabled={idx === expected_measures.length-1} onClick={e => {
+        if (del_interval)
+          del_interval(expected_measure)
+      }}>-</button>
     </div>
   )
 }

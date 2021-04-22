@@ -1,4 +1,5 @@
 - Fix dials layout DONE
 - Remove the 'non-editable' schedule DONE
 - Make a nicer schedule editing form - DONE...ish. Looks ok, maybe can be improved?
+- Add a button to remove intervals - DONE
 - Make the confirmation dialog a pop-up with a required configuration 'description' field

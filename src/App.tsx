@@ -74,6 +74,20 @@ const App: React.FC = () => {
     setEdited(false)
   }
 
+  const handleDelInterval = (expected_measure: ExpectedMeasure) => {
+    let newSchedule: ExpectedMeasure[] = []
+
+    if (editableChamberSchedule)
+      newSchedule = [...editableChamberSchedule]
+
+    newSchedule = newSchedule.filter((expected) => (
+      expected !== expected_measure
+    ));
+
+    setEditableChamberSchedule([...newSchedule])
+    setEdited(true)
+  }
+
   const handleAddInterval = (expected_measure: ExpectedMeasure, minutes_since_start_of_day: number) => {
     let newSchedule: ExpectedMeasure[] = []
 
@@ -207,6 +221,7 @@ const App: React.FC = () => {
                           time_change={handleTimeChange}
                           value_change={handleValueChange}
                           add_interval={handleAddInterval}
+                          del_interval={handleDelInterval}
                           expected_measure={expected_measure}
                           idx={idx}
                           key={expected_measure.id}
