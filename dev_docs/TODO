@@ -1,4 +1,4 @@
-- Fix dials layout *
-- Remove the 'non-editable' schedule
-- Make a nicer schedule editing form
+- Fix dials layout DONE
+- Remove the 'non-editable' schedule DONE
 - Make the confirmation dialog a pop-up with a required configuration 'description' field
+- Make a nicer schedule editing form
