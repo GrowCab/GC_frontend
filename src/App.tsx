@@ -179,9 +179,9 @@ const App: React.FC = () => {
         <h1>Chamber 1 status:</h1>
         {
           chamberUnits.data?.map((unit, idx) => (
-            (editableChamberSchedule) ?
+            (chamberSchedule) ?
               <DisplayDials key={'dial-'+idx} expected_measures={
-                editableChamberSchedule?.filter(
+                chamberSchedule?.filter(
                   (expected_measure) => (expected_measure.unit_id === unit.id)
                 )} current_measure={data?.find((unit_measure) => (
                   unit_measure.sensor_unit?.unit?.id === unit.id
