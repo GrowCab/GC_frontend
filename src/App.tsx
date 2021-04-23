@@ -103,10 +103,7 @@ const App: React.FC = () => {
     })
 
     const newItem: ExpectedMeasure = {
-      configuration_id: expected_measure.configuration_id,
-      unit_id: expected_measure.unit_id,
-      unit: expected_measure.unit,
-      expected_value: expected_measure.expected_value,
+      ...expected_measure,
       end_hour: Math.round(hour),
       end_minute: Math.round(min),
     }
@@ -119,9 +116,9 @@ const App: React.FC = () => {
     setEdited(true)
   }
 
-  const handleValueChange = (id: number | undefined, new_value: number) => {
+  const handleValueChange = (id: ExpectedMeasure | undefined, new_value: number) => {
     const newSchedule = editableChamberSchedule?.map((expected) => {
-      if (expected.id === id) {
+      if (expected === id) {
         const updatedItem: ExpectedMeasure = {
           ...expected,
           expected_value: new_value,

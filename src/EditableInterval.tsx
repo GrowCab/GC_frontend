@@ -10,7 +10,7 @@ export const EditableInterval = ({ add_interval, del_interval, time_change, valu
                                      add_interval?: (id: ExpectedMeasure, mid_minutes: number) => void,
                                      del_interval?: (id: ExpectedMeasure) => void,
                                      time_change?: (id: number | undefined, new_value: String) => void,
-                                     value_change?: (id: number | undefined, new_value: number) => void,
+                                     value_change?: (id: ExpectedMeasure | undefined, new_value: number) => void,
                                      expected_measure: ExpectedMeasure,
                                      idx: number,
                                      expected_measures: ExpectedMeasure[]
@@ -34,7 +34,7 @@ export const EditableInterval = ({ add_interval, del_interval, time_change, valu
       <span>=</span>
       <input type='text' onChange={e => {
         if (value_change)
-          value_change(expected_measure.id, Number(e.target.value))
+          value_change(expected_measure, Number(e.target.value))
       }} value={expected_measure.expected_value} /> {expected_measure.unit?.description}
       <button
         disabled={
