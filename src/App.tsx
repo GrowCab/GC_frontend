@@ -15,7 +15,7 @@ import { DisplayDials } from './DisplayDials'
 
 
 const App: React.FC = () => {
-  const chamberSchedule = useGetChamberSchedule({ chamber_id: 1 }).data?.expected_measure
+  const chamberSchedule = useGetChamberSchedule({ chamber_id: 1 })
   const [edited, setEdited] = useState<Boolean>(false)
 
   const [editableChamberSchedule, setEditableChamberSchedule] = useState<ExpectedMeasure[] | null>(null)
@@ -32,8 +32,8 @@ const App: React.FC = () => {
   }
 
   const resetEditable = () => {
-    if (chamberSchedule) {
-      setEditableChamberSchedule([...chamberSchedule])
+    if (chamberSchedule.data?.expected_measure) {
+      setEditableChamberSchedule([...chamberSchedule.data?.expected_measure])
       setEdited(false)
       closeModal()
     }
@@ -103,7 +103,10 @@ const App: React.FC = () => {
     })
 
     const newItem: ExpectedMeasure = {
-      ...expected_measure,
+      configuration_id: expected_measure.configuration_id,
+      unit_id: expected_measure.unit_id,
+      unit: expected_measure.unit,
+      expected_value: expected_measure.expected_value,
       end_hour: Math.round(hour),
       end_minute: Math.round(min),
     }
@@ -166,10 +169,16 @@ const App: React.FC = () => {
 
   // Load the editableChamberSchedule when the chamberSchedule has been reloaded
   useEffect(() => {
-    if (chamberSchedule) {
-      setEditableChamberSchedule([...chamberSchedule])
+    if (chamberSchedule.data?.expected_measure) {
+      const timerId = window.setTimeout(() => chamberSchedule.refetch(), 1000)
+      if (!edited) {
+        setEditableChamberSchedule(chamberSchedule.data.expected_measure)
+      }
+      return () => window.clearTimeout(timerId)
+    } else {
+      return
     }
-  }, [chamberSchedule])
+  }, [chamberSchedule.data])
 
   return (
     <div className='App'>
@@ -189,9 +198,9 @@ const App: React.FC = () => {
       <div>
         <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>{
           chamberUnits.data?.map((unit, idx) => (
-            (chamberSchedule) ?
+            (chamberSchedule.data?.expected_measure) ?
               <DisplayDials key={'dial-' + idx} expected_measures={
-                chamberSchedule?.filter(
+                chamberSchedule.data.expected_measure?.filter(
                   (expected_measure) => (expected_measure.unit_id === unit.id),
                 )} current_measure={data?.find((unit_measure) => (
                 unit_measure.sensor_unit?.unit?.id === unit.id
