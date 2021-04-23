@@ -183,17 +183,7 @@ const App: React.FC = () => {
   return (
     <div className='App'>
       <header className='App-header'>
-        <p>Sensors list:</p>
-        <GetSensors children={
-          (sensors, action) => {
-            return (action.loading) ? <p>loading...</p> :
-              <div>
-                {sensors?.map((sensor, idx) => (
-                  <p key={'sensor-' + idx}>{sensor.description}</p>
-                ))}
-              </div>
-          }
-        } />
+        <h1>GrowCab</h1>
       </header>
       <div>
         <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>{
