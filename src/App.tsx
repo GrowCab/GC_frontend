@@ -3,7 +3,6 @@ import './App.css'
 import {
   Configuration1,
   ExpectedMeasure,
-  GetSensors,
   useGetChamberSchedule,
   useGetChamberStatus,
   useGetChamberUnits,
@@ -66,8 +65,9 @@ const App: React.FC = () => {
         })
     })
 
-    putConfiguration.mutate(newConfiguration).then(() => {
+    putConfiguration.mutate(newConfiguration).then((r) => {
       console.log('Saving new configuration')
+      setEditableChamberSchedule(r.expected_measure || [])
     })
 
     closeModal()
@@ -178,7 +178,7 @@ const App: React.FC = () => {
     } else {
       return
     }
-  }, [chamberSchedule.data])
+  })
 
   return (
     <div className='App'>
@@ -220,7 +220,7 @@ const App: React.FC = () => {
                           del_interval={handleDelInterval}
                           expected_measure={expected_measure}
                           idx={idx}
-                          key={expected_measure.id}
+                          key={'editable_interval_component-'+expected_measure.id}
                           expected_measures={expected_measures} />
                       ))
                     )
