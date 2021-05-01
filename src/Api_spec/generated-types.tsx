@@ -5,34 +5,32 @@ import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, Use
 export const SPEC_VERSION = "v1"; 
 export interface ChamberSensor {
   id?: number;
+  chamber_id?: number | null;
+  sensor_id?: number | null;
+  sensor?: Sensor;
 }
 
 export interface Chamber {
+  chamber_sensor?: ChamberSensor[];
+  id?: number;
   timestamp?: string | null;
   description: string;
-  id?: number;
-  sensors?: ChamberSensor[];
 }
 
 export interface Sensor {
   chamber?: Chamber;
-  description: string;
   id?: number;
   timestamp?: string | null;
+  description: string;
 }
 
-export interface Sensor1 {
+export interface EditableSensor {
   chamber?: Chamber;
-  description?: string;
-  id?: number;
   timestamp?: string | null;
+  description: string;
 }
 
 export interface Error {
-  /**
-   * Error code
-   */
-  code?: number;
   /**
    * Errors
    */
@@ -42,56 +40,58 @@ export interface Error {
    */
   message?: string;
   /**
+   * Error code
+   */
+  code?: number;
+  /**
    * Error name
    */
   status?: string;
 }
 
 export interface Unit {
-  description: string;
   id?: number;
+  description: string;
 }
 
 export interface ExpectedMeasure {
-  id?: number;
-  configuration_id?: number | null;
-  expected_value: number;
-  unit_id?: number | null;
-  unit?: Unit;
-  end_hour: number;
   end_minute: number;
+  expected_value: number;
+  unit?: Unit;
+  id?: number;
+  unit_id: number;
+  end_hour: number;
 }
 
 export interface Configuration {
-  id?: number;
-  chamber_id?: number | null;
-  expected_measure?: ExpectedMeasure[];
   description: string;
+  chamber_id: number;
   timestamp?: string | null;
+  expected_measure?: ExpectedMeasure[];
+  id?: number;
 }
 
-export interface Configuration1 {
-  id?: number;
-  chamber_id?: number | null;
+export interface EditableConfiguration {
+  chamber_id: number;
+  description: string;
   expected_measure?: ExpectedMeasure[];
-  description?: string;
-  timestamp?: string | null;
 }
 
 export interface SensorUnit {
-  unit?: Unit;
-  min?: number | null;
   id?: number;
   max?: number | null;
+  min?: number | null;
+  unit?: Unit;
 }
 
 export interface Measure {
-  current_value: number;
-  id?: number;
-  sensor_unit_id?: number | null;
   sensor_unit?: SensorUnit;
-  chamber_sensor_id?: number | null;
+  measure_group_id: number;
+  current_value: number;
+  sensor_unit_id: number;
   timestamp?: string | null;
+  chamber_sensor_id: number;
+  id?: number;
 }
 
 /**
@@ -125,7 +125,7 @@ export type UseGetSensorsProps = Omit<UseGetProps<Sensor[], DefaultErrorResponse
 export const useGetSensors = (props: UseGetSensorsProps) => useGet<Sensor[], DefaultErrorResponse, void, void>(`/api/sensors`, props);
 
 
-export type PutSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>, "path" | "verb">;
+export type PutSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableSensor, void>, "path" | "verb">;
 
 /**
  * Stores a new sensor
@@ -133,7 +133,7 @@ export type PutSensorProps = Omit<MutateProps<Sensor, UnprocessableEntityRespons
  * Each sensor contains an id, description and insertion timestamp
  */
 export const PutSensor = (props: PutSensorProps) => (
-  <Mutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>
+  <Mutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableSensor, void>
     verb="PUT"
     path={`/api/sensors`}
     
@@ -141,14 +141,14 @@ export const PutSensor = (props: PutSensorProps) => (
   />
 );
 
-export type UsePutSensorProps = Omit<UseMutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>, "path" | "verb">;
+export type UsePutSensorProps = Omit<UseMutateProps<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableSensor, void>, "path" | "verb">;
 
 /**
  * Stores a new sensor
  * 
  * Each sensor contains an id, description and insertion timestamp
  */
-export const usePutSensor = (props: UsePutSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, Sensor1, void>("PUT", `/api/sensors`, props);
+export const usePutSensor = (props: UsePutSensorProps) => useMutate<Sensor, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableSensor, void>("PUT", `/api/sensors`, props);
 
 
 export type GetConfigurationsProps = Omit<GetProps<Configuration[], DefaultErrorResponse, void, void>, "path">;
@@ -172,13 +172,13 @@ export type UseGetConfigurationsProps = Omit<UseGetProps<Configuration[], Defaul
 export const useGetConfigurations = (props: UseGetConfigurationsProps) => useGet<Configuration[], DefaultErrorResponse, void, void>(`/api/configurations`, props);
 
 
-export type PutConfigurationProps = Omit<MutateProps<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>, "path" | "verb">;
+export type PutConfigurationProps = Omit<MutateProps<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableConfiguration, void>, "path" | "verb">;
 
 /**
  * Stores a new configuration
  */
 export const PutConfiguration = (props: PutConfigurationProps) => (
-  <Mutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>
+  <Mutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableConfiguration, void>
     verb="PUT"
     path={`/api/configurations`}
     
@@ -186,12 +186,12 @@ export const PutConfiguration = (props: PutConfigurationProps) => (
   />
 );
 
-export type UsePutConfigurationProps = Omit<UseMutateProps<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>, "path" | "verb">;
+export type UsePutConfigurationProps = Omit<UseMutateProps<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableConfiguration, void>, "path" | "verb">;
 
 /**
  * Stores a new configuration
  */
-export const usePutConfiguration = (props: UsePutConfigurationProps) => useMutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, Configuration1, void>("PUT", `/api/configurations`, props);
+export const usePutConfiguration = (props: UsePutConfigurationProps) => useMutate<Configuration, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableConfiguration, void>("PUT", `/api/configurations`, props);
 
 
 export interface GetSensorPathParams {
