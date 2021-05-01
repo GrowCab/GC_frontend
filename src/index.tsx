@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {RestfulProvider} from "restful-react";
+import { ChakraProvider } from '@chakra-ui/react';
 
 ReactDOM.render(
   <React.StrictMode>
-    <RestfulProvider base="">
-      <App />
-    </RestfulProvider>
+    <ChakraProvider>
+      <RestfulProvider base="">
+        <App />
+      </RestfulProvider>
+    </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
