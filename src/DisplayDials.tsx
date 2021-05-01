@@ -13,9 +13,6 @@ export const DisplayDials = ({
   const svgWidth = 300
 
   const pieHelper = pie<ExpectedMeasure>().value((d) => d.end_hour * 100 + d.end_minute)
-    .sort(null,
-      /*(a, b) => (a.end_hour*100+a.end_minute - b.end_hour*100+b.end_minute)*/
-    )
   const outerRadius = svgHeight / 2 * 0.95
   const innerRadius = svgHeight / 2 * 0.60
   const arcGenerator = arc<PieArcDatum<ExpectedMeasure>>()
