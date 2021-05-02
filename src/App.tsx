@@ -125,9 +125,9 @@ const App: React.FC = () => {
     }
   }
 
-  const handleTimeChange = (id: number | undefined, new_value: String) => {
+  const handleTimeChange = (id: ExpectedMeasure | undefined, new_value: String) => {
     const newSchedule = editableChamberSchedule?.map((expected) => {
-      if (expected.id === id) {
+      if (expected === id) {
         const updatedItem: ExpectedMeasure = {
           ...expected,
           end_minute: Number(new_value.slice(3, 5)),
@@ -148,7 +148,7 @@ const App: React.FC = () => {
     // if (error) {
     // } else
     if (chamberStatus) {
-      const timerId = window.setTimeout(() => refetchChamberStatus(), 1000)
+      const timerId = window.setTimeout(() => refetchChamberStatus(), 30000)
       return () => window.clearTimeout(timerId)
     } else {
       return
@@ -158,7 +158,7 @@ const App: React.FC = () => {
   // Load the editableChamberSchedule when the chamberSchedule has been reloaded
   useEffect(() => {
     if (chamberSchedule?.expected_measure) {
-      const timerId = window.setTimeout(() => chamberScheduleRefetch(), 1000)
+      const timerId = window.setTimeout(() => chamberScheduleRefetch(), 30000)
       if (!edited) {
         setEditableChamberSchedule(chamberSchedule.expected_measure)
       }

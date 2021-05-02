@@ -10,7 +10,7 @@ export const EditableInterval = ({ add_interval, del_interval, time_change, valu
                                    {
                                      add_interval?: (id: ExpectedMeasure, mid_minutes: number) => void,
                                      del_interval?: (id: ExpectedMeasure) => void,
-                                     time_change?: (id: number | undefined, new_value: String) => void,
+                                     time_change?: (id: ExpectedMeasure | undefined, new_value: String) => void,
                                      value_change?: (id: ExpectedMeasure | undefined, new_value: number) => void,
                                      expected_measure: ExpectedMeasure,
                                      idx: number,
@@ -32,7 +32,7 @@ export const EditableInterval = ({ add_interval, del_interval, time_change, valu
         type='time'
              onChange={e => {
                if (time_change)
-                 time_change(expected_measure.id, e.target.value)
+                 time_change(expected_measure, e.target.value)
              }}
              value={getTimeString(expected_measure.end_hour, expected_measure.end_minute)} />
         <Input m={1}
