@@ -36,7 +36,7 @@ const App: React.FC = () => {
    * Used for sending the new configuration over the network, must confirm the config was stored
    * and update the current local chamberSchedule + recreate the editableChamberSchedule
    */
-  const storeNewConfiguration = (e: any) => {
+  const storeNewConfiguration = async (e: any) => {
     e.preventDefault()
     if (!edited) {
       return
@@ -56,9 +56,11 @@ const App: React.FC = () => {
         })
     })
 
-    putConfiguration.mutate(newConfiguration).then((r) => {
+    await putConfiguration.mutate(newConfiguration).then(async (r) => {
       console.log('Saving new configuration')
       setEditableChamberSchedule(r.expected_measure || [])
+      await chamberScheduleRefetch()
+      console.log('Saved new configuration')
     })
 
     saveModalOnClose()
@@ -75,8 +77,7 @@ const App: React.FC = () => {
       expected !== expected_measure
     ));
 
-    setEditableChamberSchedule([...newSchedule])
-    setEdited(isConfigUnchanged())
+    isConfigChanged([...newSchedule])
   }
 
   const handleAddInterval = (expected_measure: ExpectedMeasure, minutes_since_start_of_day: number) => {
@@ -105,8 +106,7 @@ const App: React.FC = () => {
       newSchedule.splice(insertionPoint, 0, newItem)
     }
 
-    setEditableChamberSchedule([...newSchedule])
-    setEdited(isConfigUnchanged())
+    isConfigChanged([...newSchedule])
   }
 
   const handleValueChange = (id: ExpectedMeasure | undefined, new_value: number) => {
@@ -121,8 +121,7 @@ const App: React.FC = () => {
       return expected
     })
     if (newSchedule) {
-      setEditableChamberSchedule([...newSchedule])
-      setEdited(isConfigUnchanged())
+      isConfigChanged([...newSchedule])
     }
   }
 
@@ -139,23 +138,22 @@ const App: React.FC = () => {
       return expected
     })
     if (newSchedule) {
-      setEditableChamberSchedule([...newSchedule])
-      setEdited(isConfigUnchanged())
+      isConfigChanged([...newSchedule])
     }
   }
 
-  const { data, refetch, error } = useGetChamberStatus({ chamber_id: 1 })
+  const { data: chamberStatus, refetch: refetchChamberStatus, error } = useGetChamberStatus({ chamber_id: 1 })
 
   useEffect(() => {
     // if (error) {
     // } else
-    if (data) {
-      const timerId = window.setTimeout(() => refetch(), 1000)
+    if (chamberStatus) {
+      const timerId = window.setTimeout(() => refetchChamberStatus(), 1000)
       return () => window.clearTimeout(timerId)
     } else {
       return
     }
-  }, [data, refetch, error])
+  }, [chamberStatus, refetchChamberStatus, error])
 
   // Load the editableChamberSchedule when the chamberSchedule has been reloaded
   useEffect(() => {
@@ -168,22 +166,38 @@ const App: React.FC = () => {
     } else {
       return
     }
-  })
+  }, [edited, chamberSchedule?.expected_measure, chamberScheduleRefetch])
 
-  const isConfigUnchanged = () => {
-    if (!chamberSchedule || !editableChamberSchedule)
-      return true;
+  useEffect( () => {
+    if (!editableChamberSchedule) {
+      if (chamberSchedule?.expected_measure)
+        setEditableChamberSchedule([...chamberSchedule?.expected_measure]);
+    }
+  }, [editableChamberSchedule, chamberSchedule])
 
-    if (chamberSchedule.expected_measure?.length !== editableChamberSchedule.length)
-      return false
+  const isConfigChanged = (newConfig: ExpectedMeasure[]) => {
+    setEditableChamberSchedule([...newConfig]);
+    if (!chamberSchedule?.expected_measure) {
+      setEdited(false);
+      return
+    }
 
-    return chamberSchedule.expected_measure.every((value, idx) => (
-      (value.end_minute,
-        value.end_hour,
-        value.expected_value) === (editableChamberSchedule[idx].end_minute,
-        editableChamberSchedule[idx].end_hour,
-        editableChamberSchedule[idx].expected_value)
-    ))
+    if (chamberSchedule.expected_measure?.length !== newConfig.length) {
+      setEdited(true);
+      return
+    }
+
+    for (let idx=0; idx < chamberSchedule?.expected_measure?.length; idx++) {
+      const csem = [chamberSchedule.expected_measure[idx].end_hour,
+      chamberSchedule.expected_measure[idx].end_minute, chamberSchedule.expected_measure[idx].expected_value]
+      const ecsem = [newConfig[idx].end_hour,
+      newConfig[idx].end_minute, newConfig[idx].expected_value]
+      if (JSON.stringify(csem) !== JSON.stringify(ecsem)){
+        setEdited(true);
+        return
+      }
+    }
+    setEdited(false);
   }
 
   return (
@@ -198,7 +212,7 @@ const App: React.FC = () => {
               <DisplayDials key={'dial-' + idx} expected_measures={
                 chamberSchedule.expected_measure?.filter(
                   (expected_measure) => (expected_measure.unit_id === unit.id),
-                )} current_measure={data?.find((unit_measure) => (
+                )} current_measure={chamberStatus?.find((unit_measure) => (
                 unit_measure.sensor_unit?.unit?.id === unit.id
               ))}
               /> :
@@ -210,7 +224,7 @@ const App: React.FC = () => {
       <div>
         <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>
           {
-            (chamberUnits.loading) ? <p>loading...</p> :
+            (chamberUnits.loading || !editableChamberSchedule) ? <p>loading...</p> :
               (
                 chamberUnits.data?.map((unit, idx) => {
                     const intervals = (
@@ -224,7 +238,7 @@ const App: React.FC = () => {
                           del_interval={handleDelInterval}
                           expected_measure={expected_measure}
                           idx={idx}
-                          key={'editable_interval_component-' + expected_measure.id}
+                          key={'editable_interval_component-'+expected_measure.unit_id+'-'+idx}
                           expected_measures={expected_measures} />
                       ))
                     )
