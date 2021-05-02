@@ -9,7 +9,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider>
-      <RestfulProvider base="">
+      <RestfulProvider base="http://localhost:5000">
         <App />
       </RestfulProvider>
     </ChakraProvider>
