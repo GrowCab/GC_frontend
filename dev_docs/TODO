@@ -4,4 +4,5 @@
 - Add a button to remove intervals - DONE
 - Fix an issue where values of added intervals where changing alongside others - DONE
 - Fix an issue where the current configuration was not being updated regularly - DONE
-- Make the confirmation dialog a pop-up with a required configuration 'description' field
+- Make the confirmation dialog a pop-up with a required configuration 'description' field - DONE
+- Nicer interface - DONE
