@@ -4,41 +4,32 @@ import React from "react";
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from "restful-react";
 export const SPEC_VERSION = "v1"; 
 export interface ChamberSensor {
-  id?: number;
-  chamber_id?: number | null;
-  sensor_id?: number | null;
   sensor?: Sensor;
+  sensor_id: number;
 }
 
 export interface Chamber {
   chamber_sensor?: ChamberSensor[];
-  id?: number;
-  timestamp?: string | null;
   description: string;
+  timestamp?: string | null;
+  id?: number;
 }
 
 export interface Sensor {
-  chamber?: Chamber;
-  id?: number;
-  timestamp?: string | null;
   description: string;
+  hardware_classname: string;
+  timestamp?: string | null;
+  chamber?: Chamber;
 }
 
 export interface EditableSensor {
-  chamber?: Chamber;
-  timestamp?: string | null;
   description: string;
+  hardware_classname: string;
+  timestamp?: string | null;
+  chamber?: Chamber;
 }
 
 export interface Error {
-  /**
-   * Errors
-   */
-  errors?: {[key: string]: any};
-  /**
-   * Error message
-   */
-  message?: string;
   /**
    * Error code
    */
@@ -47,51 +38,111 @@ export interface Error {
    * Error name
    */
   status?: string;
+  /**
+   * Errors
+   */
+  errors?: {[key: string]: any};
+  /**
+   * Error message
+   */
+  message?: string;
 }
 
 export interface Unit {
-  id?: number;
+  hardware_label: string;
   description: string;
+  label: string;
+  id?: number;
 }
 
 export interface ExpectedMeasure {
-  end_minute: number;
-  expected_value: number;
-  unit?: Unit;
-  id?: number;
-  unit_id: number;
   end_hour: number;
+  unit?: Unit;
+  expected_value: number;
+  unit_id: number;
+  end_minute: number;
+  id?: number;
 }
 
 export interface Configuration {
   description: string;
-  chamber_id: number;
-  timestamp?: string | null;
   expected_measure?: ExpectedMeasure[];
+  timestamp?: string | null;
+  chamber_id: number;
   id?: number;
 }
 
 export interface EditableConfiguration {
-  chamber_id: number;
   description: string;
+  chamber_id: number;
   expected_measure?: ExpectedMeasure[];
 }
 
 export interface SensorUnit {
-  id?: number;
-  max?: number | null;
-  min?: number | null;
+  min: number;
   unit?: Unit;
+  max: number;
 }
 
 export interface Measure {
   sensor_unit?: SensorUnit;
-  measure_group_id: number;
-  current_value: number;
-  sensor_unit_id: number;
-  timestamp?: string | null;
   chamber_sensor_id: number;
+  measure_group_id: number;
+  sensor_unit_id: number;
+  current_value: number;
   id?: number;
+}
+
+export interface ChamberStatus {
+  data?: {
+  [key: string]: {[key: string]: any};
+};
+}
+
+export interface SensorMeasure {
+  sensor_unit?: SensorUnit;
+  chamber_sensor?: ChamberSensor;
+  sensor_unit_id: number;
+  current_value: number;
+  chamber_sensor_id: number;
+}
+
+export interface Actuator {
+  description: string;
+  id?: number;
+}
+
+export interface ChamberActuator {
+  actuator?: Actuator;
+  actuator_id: number;
+}
+
+export interface ActuatorMeasure {
+  chamber_actuator?: ChamberActuator;
+  current_value: number;
+  chamber_actuator_id: number;
+}
+
+export interface MeasureGroup {
+  sensor_measure?: SensorMeasure[];
+  timestamp?: string | null;
+  actuator_measure?: ActuatorMeasure[];
+}
+
+export interface EditableSensorMeasure {
+  sensor_unit_id: number;
+  current_value: number;
+  chamber_sensor_id: number;
+}
+
+export interface EditableActuatorMeasure {
+  current_value: number;
+  chamber_actuator_id: number;
+}
+
+export interface EditableMeasureGroup {
+  sensor_measure?: EditableSensorMeasure[];
+  actuator_measure?: EditableActuatorMeasure[];
 }
 
 /**
@@ -419,4 +470,59 @@ export const GetChamberStatus = ({chamber_id, ...props}: GetChamberStatusProps) 
 export type UseGetChamberStatusProps = Omit<UseGetProps<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
 
 export const useGetChamberStatus = ({chamber_id, ...props}: UseGetChamberStatusProps) => useGet<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>((paramsInPath: GetChamberStatusPathParams) => `/api/chamber_status/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+
+
+export interface PutChamberStatusPathParams {
+  chamber_id: number
+}
+
+export type PutChamberStatusProps = Omit<MutateProps<Measure[], UnprocessableEntityResponse | DefaultErrorResponse, void, ChamberStatus, PutChamberStatusPathParams>, "path" | "verb"> & PutChamberStatusPathParams;
+
+export const PutChamberStatus = ({chamber_id, ...props}: PutChamberStatusProps) => (
+  <Mutate<Measure[], UnprocessableEntityResponse | DefaultErrorResponse, void, ChamberStatus, PutChamberStatusPathParams>
+    verb="PUT"
+    path={`/api/chamber_status/${chamber_id}`}
+    
+    {...props}
+  />
+);
+
+export type UsePutChamberStatusProps = Omit<UseMutateProps<Measure[], UnprocessableEntityResponse | DefaultErrorResponse, void, ChamberStatus, PutChamberStatusPathParams>, "path" | "verb"> & PutChamberStatusPathParams;
+
+export const usePutChamberStatus = ({chamber_id, ...props}: UsePutChamberStatusProps) => useMutate<Measure[], UnprocessableEntityResponse | DefaultErrorResponse, void, ChamberStatus, PutChamberStatusPathParams>("PUT", (paramsInPath: PutChamberStatusPathParams) => `/api/chamber_status/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+
+
+export interface GetLatestMeasureGroupPathParams {
+  chamber_id: number
+}
+
+export type GetLatestMeasureGroupProps = Omit<GetProps<MeasureGroup, DefaultErrorResponse, void, GetLatestMeasureGroupPathParams>, "path"> & GetLatestMeasureGroupPathParams;
+
+export const GetLatestMeasureGroup = ({chamber_id, ...props}: GetLatestMeasureGroupProps) => (
+  <Get<MeasureGroup, DefaultErrorResponse, void, GetLatestMeasureGroupPathParams>
+    path={`/api/measure_group/${chamber_id}`}
+    
+    {...props}
+  />
+);
+
+export type UseGetLatestMeasureGroupProps = Omit<UseGetProps<MeasureGroup, DefaultErrorResponse, void, GetLatestMeasureGroupPathParams>, "path"> & GetLatestMeasureGroupPathParams;
+
+export const useGetLatestMeasureGroup = ({chamber_id, ...props}: UseGetLatestMeasureGroupProps) => useGet<MeasureGroup, DefaultErrorResponse, void, GetLatestMeasureGroupPathParams>((paramsInPath: GetLatestMeasureGroupPathParams) => `/api/measure_group/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+
+
+export type PutLatestMeasureGroupProps = Omit<MutateProps<MeasureGroup, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableMeasureGroup, void>, "path" | "verb">;
+
+export const PutLatestMeasureGroup = (props: PutLatestMeasureGroupProps) => (
+  <Mutate<MeasureGroup, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableMeasureGroup, void>
+    verb="PUT"
+    path={`/api/measure_group`}
+    
+    {...props}
+  />
+);
+
+export type UsePutLatestMeasureGroupProps = Omit<UseMutateProps<MeasureGroup, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableMeasureGroup, void>, "path" | "verb">;
+
+export const usePutLatestMeasureGroup = (props: UsePutLatestMeasureGroupProps) => useMutate<MeasureGroup, UnprocessableEntityResponse | DefaultErrorResponse, void, EditableMeasureGroup, void>("PUT", `/api/measure_group`, props);
 
