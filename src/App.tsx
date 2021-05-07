@@ -10,7 +10,7 @@ import {
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 import { DisplayDials } from './DisplayDials'
-import { Button, Center, Heading, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, Center, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react'
 import { StoreConfigurationModal } from './StoreConfigurationModal'
 
 
@@ -148,7 +148,7 @@ const App: React.FC = () => {
     // if (error) {
     // } else
     if (chamberStatus) {
-      const timerId = window.setTimeout(() => refetchChamberStatus(), 30000)
+      const timerId = window.setTimeout(() => refetchChamberStatus(), 5000)
       return () => window.clearTimeout(timerId)
     } else {
       return
@@ -201,27 +201,27 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className='App'>
+    <Box height={"100vh"} className='App'>
       <header className='App-header'>
         <Heading>GrowCab</Heading>
       </header>
-      <div>
-        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>{
+      <Box backgroundColor={"#acacac"} height={"100%"}>
+        <Flex alignItems={"stretch"} justifyContent={"space-evenly"}>{
           chamberUnits.data?.map((unit, idx) => (
-            (chamberSchedule?.expected_measure) ?
+            (chamberSchedule?.expected_measure) ? (
+              <Flex key={'unit_flex-' + idx} direction={"column"} flexFlow={"vertical"} alignContent={"center"}>
+                <Text key={'text-' + idx} fontWeight={"bold"} fontSize={"2rem"}>{unit.label}</Text>
               <DisplayDials key={'dial-' + idx} expected_measures={
                 chamberSchedule.expected_measure?.filter(
                   (expected_measure) => (expected_measure.unit_id === unit.id),
                 )} current_measure={chamberStatus?.find((unit_measure) => (
                 unit_measure.sensor_unit?.unit?.id === unit.id
               ))}
-              /> :
+              /></Flex> ):
               <p key={'ldial' + idx}>loading...</p>),
           )
         }
-        </div>
-      </div>
-      <div>
+        </Flex>
         <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>
           {
             (chamberUnits.loading || !editableChamberSchedule) ? <p>loading...</p> :
@@ -251,15 +251,15 @@ const App: React.FC = () => {
                 ))
           }
         </div>
-        <Center padding={5} h={"200px"}>
+        <Center padding={5}>
           <Button size={"lg"} color={!edited ? "gray" : "teal"}
                   disabled={!edited}
                   onClick={saveModalOnOpen}>Save changes</Button>
         </Center>
-      </div>
+      </Box>
       <StoreConfigurationModal open={saveModalIsOpen} onClose={saveModalOnClose} onSubmit={storeNewConfiguration}
                                onClick={resetEditable} />
-    </div>
+    </Box>
   )
 }
 

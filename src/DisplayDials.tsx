@@ -11,6 +11,7 @@ export const DisplayDials = ({
 
   const svgHeight = 300
   const svgWidth = 300
+  const { max, min } = (current_measure?.sensor_unit) ? current_measure.sensor_unit : { min: 0, max: 1 };
 
   const pieHelper = pie<ExpectedMeasure>().value((d) => d.end_hour * 100 + d.end_minute)
   const outerRadius = svgHeight / 2 * 0.95
@@ -31,8 +32,8 @@ export const DisplayDials = ({
           const [x, y] = arcGenerator.centroid(datum)
           return (
             <g key={'arc-' + datum.data.unit_id + '-' + i}>
-              <path d={arcGenerator(datum) || ''} fill={interpolateBlues(datum.data.expected_value / 75)} />
-              <text textAnchor={'middle'} fill={'#000000'}
+              <path d={arcGenerator(datum) || ''} fill={interpolateBlues((1.0/(max-min)) * (datum.data.expected_value - min))} />
+              <text fontWeight={"bold"} textAnchor={'middle'} fill={'#000000'}
                     transform={`translate(${x}, ${y})`}>
                 {
                   String(datum.data.expected_value) + ' ' + (
@@ -44,8 +45,8 @@ export const DisplayDials = ({
           )
         })}
       </g>
-      <text transform={translateHelper} textAnchor={'middle'}>
-        {((current_measure?.current_value || '') + ' ' + (current_measure?.sensor_unit?.unit?.description)) || ''}
+      <text fontWeight={"bold"} fontSize={"1.5rem"} transform={translateHelper} textAnchor={'middle'}>
+        {((current_measure?.current_value.toFixed(0) || '') + ' ' + (current_measure?.sensor_unit?.unit?.description)) || ''}
       </text>
       <line transform={translateHelper}
             x1={0.25 * innerRadius * Math.cos(arrowAngle)}
