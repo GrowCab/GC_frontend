@@ -206,13 +206,14 @@ const App: React.FC = () => {
         <Heading>GrowCab</Heading>
       </header>
       <Box>
-        <Flex alignItems={"stretch"} justifyContent={"space-evenly"} flexWrap={"wrap"}>{
-          chamberUnits.data?.map((unit, idx) => (
-            (chamberSchedule?.expected_measure) ? (
+        <Flex alignItems={"stretch"} justifyContent={"space-evenly"} flexWrap={"wrap"}>
+          {
+            (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure) ? (
+              chamberUnits.data.map((unit, idx) => (
               <Flex alignItems={"center"} key={'unit_flex-' + idx} direction={"column"} flexFlow={"vertical"} alignContent={"center"}>
                 <Text key={'text-' + idx} fontWeight={"bold"} fontSize={"2rem"}>{unit.label}</Text>
                 <DisplayDials key={'dial-' + idx} expected_measures={
-                  chamberSchedule.expected_measure?.filter(
+                  chamberSchedule.expected_measure!.filter(
                     (expected_measure) => (expected_measure.unit_id === unit.id),
                   )} current_measure={chamberStatus?.find((unit_measure) => (
                   unit_measure.sensor_unit?.unit?.id === unit.id
@@ -231,11 +232,9 @@ const App: React.FC = () => {
                           key={'editable_interval_component-'+expected_measure.unit_id+'-'+idx}
                           expected_measures={expected_measures} />
                       ))}
-              </Flex>
-              ):
-              <p key={'ldial' + idx}>loading...</p>),
-          )
-        }
+              </Flex>))
+            ) : <p>loading...</p>
+          }
         </Flex>
         <Center padding={5}>
           <Button size={"lg"} color={!edited ? "gray" : "teal"}
