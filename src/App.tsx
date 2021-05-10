@@ -15,8 +15,8 @@ import { StoreConfigurationModal } from './StoreConfigurationModal'
 
 
 const App: React.FC = () => {
-  const {isOpen: saveModalIsOpen,onOpen: saveModalOnOpen,onClose: saveModalOnClose} = useDisclosure();
-  const {data: chamberSchedule, refetch: chamberScheduleRefetch} = useGetChamberSchedule({ chamber_id: 1 })
+  const { isOpen: saveModalIsOpen, onOpen: saveModalOnOpen, onClose: saveModalOnClose } = useDisclosure()
+  const { data: chamberSchedule, refetch: chamberScheduleRefetch } = useGetChamberSchedule({ chamber_id: 1 })
   const [edited, setEdited] = useState<Boolean | undefined>(false)
 
   const [editableChamberSchedule, setEditableChamberSchedule] = useState<ExpectedMeasure[] | null>(null)
@@ -75,7 +75,7 @@ const App: React.FC = () => {
 
     newSchedule = newSchedule.filter((expected) => (
       expected !== expected_measure
-    ));
+    ))
 
     isConfigChanged([...newSchedule])
   }
@@ -168,36 +168,36 @@ const App: React.FC = () => {
     }
   }, [edited, chamberSchedule?.expected_measure, chamberScheduleRefetch])
 
-  useEffect( () => {
+  useEffect(() => {
     if (!editableChamberSchedule) {
       if (chamberSchedule?.expected_measure)
-        setEditableChamberSchedule([...chamberSchedule?.expected_measure]);
+        setEditableChamberSchedule([...chamberSchedule?.expected_measure])
     }
   }, [editableChamberSchedule, chamberSchedule])
 
   const isConfigChanged = (newConfig: ExpectedMeasure[]) => {
-    setEditableChamberSchedule([...newConfig]);
+    setEditableChamberSchedule([...newConfig])
     if (!chamberSchedule?.expected_measure) {
-      setEdited(false);
+      setEdited(false)
       return
     }
 
     if (chamberSchedule.expected_measure?.length !== newConfig.length) {
-      setEdited(true);
+      setEdited(true)
       return
     }
 
-    for (let idx=0; idx < chamberSchedule?.expected_measure?.length; idx++) {
+    for (let idx = 0; idx < chamberSchedule?.expected_measure?.length; idx++) {
       const csem = [chamberSchedule.expected_measure[idx].end_hour,
-      chamberSchedule.expected_measure[idx].end_minute, chamberSchedule.expected_measure[idx].expected_value]
+        chamberSchedule.expected_measure[idx].end_minute, chamberSchedule.expected_measure[idx].expected_value]
       const ecsem = [newConfig[idx].end_hour,
-      newConfig[idx].end_minute, newConfig[idx].expected_value]
-      if (JSON.stringify(csem) !== JSON.stringify(ecsem)){
-        setEdited(true);
+        newConfig[idx].end_minute, newConfig[idx].expected_value]
+      if (JSON.stringify(csem) !== JSON.stringify(ecsem)) {
+        setEdited(true)
         return
       }
     }
-    setEdited(false);
+    setEdited(false)
   }
 
   return (
@@ -205,43 +205,45 @@ const App: React.FC = () => {
       <header className='App-header'>
         <Heading>GrowCab</Heading>
       </header>
-      <Box>
-        <Flex alignItems={"stretch"} justifyContent={"space-evenly"} flexWrap={"wrap"}>
-          {
-            (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure) ? (
-              chamberUnits.data.map((unit, idx) => (
-              <Flex alignItems={"center"} key={'unit_flex-' + idx} direction={"column"} flexFlow={"vertical"} alignContent={"center"}>
-                <Text key={'text-' + idx} fontWeight={"bold"} fontSize={"2rem"}>{unit.label}</Text>
-                <DisplayDials key={'dial-' + idx} expected_measures={
-                  chamberSchedule.expected_measure!.filter(
-                    (expected_measure) => (expected_measure.unit_id === unit.id),
-                  )} current_measure={chamberStatus?.find((unit_measure) => (
-                  unit_measure.sensor_unit?.unit?.id === unit.id
-                ))}
-                />
-                {editableChamberSchedule?.filter((expected_measure) => (
-                        expected_measure.unit_id === unit.id
-                      )).map((expected_measure, idx, expected_measures) => (
-                        <EditableInterval
-                          time_change={handleTimeChange}
-                          value_change={handleValueChange}
-                          add_interval={handleAddInterval}
-                          del_interval={handleDelInterval}
-                          expected_measure={expected_measure}
-                          idx={idx}
-                          key={'editable_interval_component-'+expected_measure.unit_id+'-'+idx}
-                          expected_measures={expected_measures} />
-                      ))}
-              </Flex>))
-            ) : <p>loading...</p>
-          }
-        </Flex>
-        <Center padding={5}>
-          <Button size={"lg"} color={!edited ? "gray" : "teal"}
-                  disabled={!edited}
-                  onClick={saveModalOnOpen}>Save changes</Button>
-        </Center>
-      </Box>
+      {
+        (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure) ? (
+            <Box>
+              <Flex alignItems={'stretch'} justifyContent={'space-evenly'} flexWrap={'wrap'}>{
+                chamberUnits.data.map((unit, idx) => (
+                  <Flex alignItems={'center'} key={'unit_flex-' + idx} direction={'column'} flexFlow={'vertical'}
+                        alignContent={'center'}>
+                    <Text key={'text-' + idx} fontWeight={'bold'} fontSize={'2rem'}>{unit.label}</Text>
+                    <DisplayDials key={'dial-' + idx} expected_measures={
+                      chamberSchedule.expected_measure!.filter(
+                        (expected_measure) => (expected_measure.unit_id === unit.id),
+                      )} current_measure={chamberStatus?.find((unit_measure) => (
+                      unit_measure.sensor_unit?.unit?.id === unit.id
+                    ))}
+                    />
+                    {editableChamberSchedule?.filter((expected_measure) => (
+                      expected_measure.unit_id === unit.id
+                    )).map((expected_measure, idx, expected_measures) => (
+                      <EditableInterval
+                        time_change={handleTimeChange}
+                        value_change={handleValueChange}
+                        add_interval={handleAddInterval}
+                        del_interval={handleDelInterval}
+                        expected_measure={expected_measure}
+                        idx={idx}
+                        key={'editable_interval_component-' + expected_measure.unit_id + '-' + idx}
+                        expected_measures={expected_measures} />
+                    ))}
+                  </Flex>))
+              }</Flex>
+              <Center padding={5}>
+                <Button size={'lg'} color={!edited ? 'gray' : 'teal'}
+                        disabled={!edited}
+                        onClick={saveModalOnOpen}>Save changes</Button>
+              </Center>
+            </Box>
+          )
+          : <p>loading...</p>
+      }
       <StoreConfigurationModal open={saveModalIsOpen} onClose={saveModalOnClose} onSubmit={storeNewConfiguration}
                                onClick={resetEditable} />
     </Box>
