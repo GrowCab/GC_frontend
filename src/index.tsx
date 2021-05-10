@@ -4,11 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {RestfulProvider} from "restful-react";
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 
 ReactDOM.render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider resetCSS={true} theme={extendTheme({
+      styles: {
+        global: {
+          body: {
+            bg: "#acacac"
+          }
+        }
+      }
+    })}>
       <RestfulProvider base="http://localhost:5000">
         <App />
       </RestfulProvider>

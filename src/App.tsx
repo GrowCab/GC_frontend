@@ -201,34 +201,24 @@ const App: React.FC = () => {
   }
 
   return (
-    <Box height={"100vh"} className='App'>
+    <Box className='App'>
       <header className='App-header'>
         <Heading>GrowCab</Heading>
       </header>
-      <Box backgroundColor={"#acacac"} height={"100%"}>
-        <Flex alignItems={"stretch"} justifyContent={"space-evenly"}>{
+      <Box>
+        <Flex alignItems={"stretch"} justifyContent={"space-evenly"} flexWrap={"wrap"}>{
           chamberUnits.data?.map((unit, idx) => (
             (chamberSchedule?.expected_measure) ? (
-              <Flex key={'unit_flex-' + idx} direction={"column"} flexFlow={"vertical"} alignContent={"center"}>
+              <Flex alignItems={"center"} key={'unit_flex-' + idx} direction={"column"} flexFlow={"vertical"} alignContent={"center"}>
                 <Text key={'text-' + idx} fontWeight={"bold"} fontSize={"2rem"}>{unit.label}</Text>
-              <DisplayDials key={'dial-' + idx} expected_measures={
-                chamberSchedule.expected_measure?.filter(
-                  (expected_measure) => (expected_measure.unit_id === unit.id),
-                )} current_measure={chamberStatus?.find((unit_measure) => (
-                unit_measure.sensor_unit?.unit?.id === unit.id
-              ))}
-              /></Flex> ):
-              <p key={'ldial' + idx}>loading...</p>),
-          )
-        }
-        </Flex>
-        <div style={{ display: 'flex', alignItems: 'stretch', justifyContent: 'space-evenly' }}>
-          {
-            (chamberUnits.loading || !editableChamberSchedule) ? <p>loading...</p> :
-              (
-                chamberUnits.data?.map((unit, idx) => {
-                    const intervals = (
-                      editableChamberSchedule?.filter((expected_measure) => (
+                <DisplayDials key={'dial-' + idx} expected_measures={
+                  chamberSchedule.expected_measure?.filter(
+                    (expected_measure) => (expected_measure.unit_id === unit.id),
+                  )} current_measure={chamberStatus?.find((unit_measure) => (
+                  unit_measure.sensor_unit?.unit?.id === unit.id
+                ))}
+                />
+                {editableChamberSchedule?.filter((expected_measure) => (
                         expected_measure.unit_id === unit.id
                       )).map((expected_measure, idx, expected_measures) => (
                         <EditableInterval
@@ -240,17 +230,13 @@ const App: React.FC = () => {
                           idx={idx}
                           key={'editable_interval_component-'+expected_measure.unit_id+'-'+idx}
                           expected_measures={expected_measures} />
-                      ))
-                    )
-                    return (
-                      <div key={'editable_interval-' + idx}>
-                        {intervals}
-                      </div>
-                    )
-                  }
-                ))
-          }
-        </div>
+                      ))}
+              </Flex>
+              ):
+              <p key={'ldial' + idx}>loading...</p>),
+          )
+        }
+        </Flex>
         <Center padding={5}>
           <Button size={"lg"} color={!edited ? "gray" : "teal"}
                   disabled={!edited}
