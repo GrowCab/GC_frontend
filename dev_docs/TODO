@@ -6,3 +6,7 @@
 - Fix an issue where the current configuration was not being updated regularly - DONE
 - Make the confirmation dialog a pop-up with a required configuration 'description' field - DONE
 - Nicer interface - DONE
+- Make 0000 implicit instead of 2359 so that new intervals appear below
+- Flipboard for the configuration setting vs the dials
+- Change the 'input' of the values to sliders
+- When holding a slider open a window to set the value to a specific one
