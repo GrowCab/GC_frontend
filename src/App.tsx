@@ -131,9 +131,9 @@ const App: React.FC = () => {
     isConfigChanged([...newSchedule])
   }
 
-  const handleValueChange = (id: ExpectedMeasure | undefined, new_value: number) => {
+  const handleValueChange = (changed_measure: ExpectedMeasure | undefined, new_value: number) => {
     const newSchedule = editableChamberSchedule?.map((expected) => {
-      if (expected === id) {
+      if (expected === changed_measure) {
         const updatedItem: ExpectedMeasure = {
           ...expected,
           expected_value: new_value
@@ -147,9 +147,9 @@ const App: React.FC = () => {
     }
   }
 
-  const handleTimeChange = (id: ExpectedMeasure | undefined, new_value: string) => {
+  const handleTimeChange = (changed_measure: ExpectedMeasure | undefined, new_value: string) => {
     const newSchedule = editableChamberSchedule?.map((expected) => {
-      if (expected === id) {
+      if (expected === changed_measure) {
         const updatedItem: ExpectedMeasure = {
           ...expected,
           end_minute: Number(new_value.slice(3, 5)),
