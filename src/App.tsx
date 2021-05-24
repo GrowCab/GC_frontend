@@ -61,6 +61,10 @@ const App: React.FC = () => {
       setEditableChamberSchedule(r.expected_measure || [])
       await chamberScheduleRefetch()
       console.log('Saved new configuration')
+    }, async (r) => {
+      alert('Error saving the data. Make sure the intervals are in order')
+      console.log('Error!')
+      console.log(r)
     })
 
     saveModalOnClose()
