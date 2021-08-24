@@ -246,7 +246,7 @@ const App: React.FC = () => {
                     </Flex>))
                   }
                 </Flex>
-                <Flex flexWrap={'wrap'} flexDirection={'row'} justifyContent={'start'} alignContent={'start'}>
+                <Flex flexWrap={'wrap'} flexDirection={'column'} justifyContent={'start'} alignContent={'start'}>
                   {chamberUnits.data.filter((unit) => !unit.controllable).map((unit, idx) => (
                     <DisplayUnit key={'unit-' + idx}
                         current_measure={chamberStatus?.sensor_measure?.find((unit_measure) => (
@@ -255,7 +255,7 @@ const App: React.FC = () => {
                         unit={unit}
                     />
                   )) }
-                  <Text>{chamberStatus?.timestamp}</Text>
+                  <Text fontSize={'2xl'} paddingBottom={'2em'}>{chamberStatus?.timestamp}</Text>
                 </Flex>
               </Flex>
               <Center padding={5}>
