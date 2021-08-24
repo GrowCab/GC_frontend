@@ -1,0 +1,8 @@
+{
+	"files.exclude": {
+		"**/.git/objects/**": true,
+		"**/.git/subtree-cache/**": true,
+		"**/node_modules/*/**": true
+	},
+	"npm.exclude": ""
+}

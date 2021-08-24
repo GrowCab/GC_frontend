@@ -4,36 +4,36 @@ import React from "react";
 import { Get, GetProps, useGet, UseGetProps, Mutate, MutateProps, useMutate, UseMutateProps } from "restful-react";
 export const SPEC_VERSION = "v1"; 
 export interface ChamberSensor {
-  sensor?: Sensor;
   sensor_id: number;
+  sensor?: Sensor;
 }
 
 export interface Chamber {
   chamber_sensor?: ChamberSensor[];
+  id?: number;
   description: string;
   timestamp?: string | null;
-  id?: number;
 }
 
 export interface Sensor {
   description: string;
   hardware_classname: string;
-  timestamp?: string | null;
   chamber?: Chamber;
+  timestamp?: string | null;
 }
 
 export interface EditableSensor {
   description: string;
   hardware_classname: string;
-  timestamp?: string | null;
   chamber?: Chamber;
+  timestamp?: string | null;
 }
 
 export interface Error {
   /**
-   * Error code
+   * Error message
    */
-  code?: number;
+  message?: string;
   /**
    * Error name
    */
@@ -43,54 +43,55 @@ export interface Error {
    */
   errors?: {[key: string]: any};
   /**
-   * Error message
+   * Error code
    */
-  message?: string;
+  code?: number;
 }
 
 export interface Unit {
   hardware_label: string;
-  description: string;
+  controllable?: boolean | null;
   label: string;
   id?: number;
+  description: string;
 }
 
 export interface ExpectedMeasure {
-  end_hour: number;
-  unit?: Unit;
-  expected_value: number;
   unit_id: number;
+  unit?: Unit;
   end_minute: number;
   id?: number;
+  end_hour: number;
+  expected_value: number;
 }
 
 export interface Configuration {
-  description: string;
   expected_measure?: ExpectedMeasure[];
   timestamp?: string | null;
   chamber_id: number;
   id?: number;
+  description: string;
 }
 
 export interface EditableConfiguration {
-  description: string;
-  chamber_id: number;
   expected_measure?: ExpectedMeasure[];
+  chamber_id: number;
+  description: string;
 }
 
 export interface SensorUnit {
-  min: number;
   unit?: Unit;
+  min: number;
   max: number;
 }
 
 export interface Measure {
-  sensor_unit?: SensorUnit;
-  chamber_sensor_id: number;
-  measure_group_id: number;
   sensor_unit_id: number;
+  sensor_unit?: SensorUnit;
   current_value: number;
   id?: number;
+  measure_group_id: number;
+  chamber_sensor_id: number;
 }
 
 export interface ChamberStatus {
@@ -100,16 +101,16 @@ export interface ChamberStatus {
 }
 
 export interface SensorMeasure {
+  sensor_unit_id: number;
   sensor_unit?: SensorUnit;
   chamber_sensor?: ChamberSensor;
-  sensor_unit_id: number;
   current_value: number;
   chamber_sensor_id: number;
 }
 
 export interface Actuator {
-  description: string;
   id?: number;
+  description: string;
 }
 
 export interface ChamberActuator {
@@ -118,15 +119,15 @@ export interface ChamberActuator {
 }
 
 export interface ActuatorMeasure {
+  chamber_actuator_id: number;
   chamber_actuator?: ChamberActuator;
   current_value: number;
-  chamber_actuator_id: number;
 }
 
 export interface MeasureGroup {
   sensor_measure?: SensorMeasure[];
-  timestamp?: string | null;
   actuator_measure?: ActuatorMeasure[];
+  timestamp?: string | null;
 }
 
 export interface EditableSensorMeasure {
@@ -136,8 +137,8 @@ export interface EditableSensorMeasure {
 }
 
 export interface EditableActuatorMeasure {
-  current_value: number;
   chamber_actuator_id: number;
+  current_value: number;
 }
 
 export interface EditableMeasureGroup {

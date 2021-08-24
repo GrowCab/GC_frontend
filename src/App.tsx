@@ -10,6 +10,7 @@ import {
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 import { DisplayDials } from './DisplayDials'
+import { DisplayUnit } from './DisplayUnit'
 import { Box, Button, Center, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react'
 import { StoreConfigurationModal } from './StoreConfigurationModal'
 
@@ -206,7 +207,7 @@ const App: React.FC = () => {
           ? (
             <Box>
               <Flex alignItems={'stretch'} justifyContent={'space-evenly'} flexWrap={'wrap'}>{
-                chamberUnits.data.map((unit, idx) => (
+                chamberUnits.data.filter((unit) => unit.controllable).map((unit, idx) => (
                   <Flex alignItems={'center'} key={'unit_flex-' + idx} direction={'column'} flexFlow={'vertical'}
                         alignContent={'center'}>
                     <Text key={'text-' + idx} fontWeight={'bold'} fontSize={'2rem'}>{unit.label}</Text>
@@ -231,7 +232,18 @@ const App: React.FC = () => {
                         expected_measures={expected_measures} />
                     ))}
                   </Flex>))
-              }</Flex>
+                }
+                <Flex>
+                {chamberUnits.data.filter((unit) => !unit.controllable).map((unit, idx) => (
+                  <DisplayUnit key={'unit-' + idx}
+                      current_measure={chamberStatus?.find((unit_measure) => (
+                        unit_measure.sensor_unit?.unit?.id === unit.id
+                      ))}
+                      unit={unit}
+                    ></DisplayUnit>
+                )) }
+                </Flex>
+              </Flex>
               <Center padding={5}>
                 <Button size={'lg'} color={!edited ? 'gray' : 'teal'}
                         disabled={!edited}
