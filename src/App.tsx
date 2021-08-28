@@ -13,9 +13,11 @@ import { DisplayDials } from './DisplayDials'
 import { DisplayUnit } from './DisplayUnit'
 import { Box, Button, Center, Flex, Heading, Text, useDisclosure } from '@chakra-ui/react'
 import { StoreConfigurationModal } from './StoreConfigurationModal'
+import { PowerOffModal } from './PowerOffModal'
 
 const App: React.FC = () => {
   const { isOpen: saveModalIsOpen, onOpen: saveModalOnOpen, onClose: saveModalOnClose } = useDisclosure()
+  const { isOpen: powerOffModalIsOpen, onOpen: powerOffModalOnOpen, onClose: powerOffModalOnClose } = useDisclosure()
   const { data: chamberSchedule, refetch: chamberScheduleRefetch } = useGetChamberSchedule({ chamber_id: 1 })
   const [edited, setEdited] = useState<boolean | undefined>(false)
 
@@ -197,10 +199,19 @@ const App: React.FC = () => {
     }
   }, [editableChamberSchedule, chamberSchedule])
 
+  const rebootAction = () => {
+    console.log('Reboot')
+  }
+
+  const powerOffAction = () => {
+    console.log('Power Off')
+  }
+
   return (
     <Box className='App'>
       <header className='App-header'>
-        <Heading>GrowCab</Heading>
+        <Heading width={'90%'}>GrowCab</Heading>
+        <Button onClick={powerOffModalOnOpen} colorScheme={'red'}><Text size={'4xl'}>⏻</Text></Button>
       </header>
       {
         (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure)
@@ -257,6 +268,8 @@ const App: React.FC = () => {
       }
       <StoreConfigurationModal open={saveModalIsOpen} onClose={saveModalOnClose} onSubmit={storeNewConfiguration}
                                onClick={resetEditable} />
+      <PowerOffModal open={powerOffModalIsOpen} onClose={powerOffModalOnClose}
+                     onReboot={rebootAction} onPowerOff={powerOffAction}/>
     </Box>
   )
 }
