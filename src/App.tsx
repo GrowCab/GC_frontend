@@ -206,42 +206,44 @@ const App: React.FC = () => {
         (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure)
           ? (
             <Box>
-              <Flex alignItems={'stretch'} justifyContent={'space-evenly'} flexWrap={'wrap'}>{
-                chamberUnits.data.filter((unit) => unit.controllable).map((unit, idx) => (
-                  <Flex alignItems={'center'} key={'unit_flex-' + idx} direction={'column'} flexFlow={'vertical'}
-                        alignContent={'center'}>
-                    <Text key={'text-' + idx} fontWeight={'bold'} fontSize={'2rem'}>{unit.label}</Text>
-                    <DisplayDials key={'dial-' + idx} expected_measures={
-                      chamberSchedule.expected_measure!.filter(
-                        (expected_measure) => (expected_measure.unit_id === unit.id)
-                      )} current_measure={chamberStatus?.find((unit_measure) => (
-                        unit_measure.sensor_unit?.unit?.id === unit.id
+              <Flex>
+                <Flex alignItems={'stretch'} justifyContent={'space-evenly'} flexWrap={'wrap'}>{
+                  chamberUnits.data.filter((unit) => unit.controllable).map((unit, idx) => (
+                    <Flex alignItems={'center'} key={'unit_flex-' + idx} direction={'column'} flexFlow={'vertical'}
+                          alignContent={'center'}>
+                      <Text key={'text-' + idx} fontWeight={'bold'} fontSize={'2rem'}>{unit.label}</Text>
+                      <DisplayDials key={'dial-' + idx} expected_measures={
+                        chamberSchedule.expected_measure!.filter(
+                          (expected_measure) => (expected_measure.unit_id === unit.id)
+                        )} current_measure={chamberStatus?.find((unit_measure) => (
+                          unit_measure.sensor_unit?.unit?.id === unit.id
+                        ))}
+                      />
+                      {editableChamberSchedule?.filter((expected_measure) => (
+                        expected_measure.unit_id === unit.id
+                      )).map((expected_measure, emidx, expected_measures) => (
+                        <EditableInterval
+                          time_change={handleTimeChange}
+                          value_change={handleValueChange}
+                          add_interval={handleAddInterval}
+                          del_interval={handleDelInterval}
+                          expected_measure={expected_measure}
+                          idx={emidx}
+                          key={'editable_interval_component-' + expected_measure.unit_id + '-' + emidx}
+                          expected_measures={expected_measures} />
                       ))}
+                    </Flex>))
+                  }
+                </Flex>
+                <Flex flexWrap={'wrap'} flexDirection={'row'} justifyContent={'start'} alignContent={'start'}>
+                  {chamberUnits.data.filter((unit) => !unit.controllable).map((unit, idx) => (
+                    <DisplayUnit key={'unit-' + idx}
+                        current_measure={chamberStatus?.find((unit_measure) => (
+                          unit_measure.sensor_unit?.unit?.id === unit.id
+                        ))}
+                        unit={unit}
                     />
-                    {editableChamberSchedule?.filter((expected_measure) => (
-                      expected_measure.unit_id === unit.id
-                    )).map((expected_measure, emidx, expected_measures) => (
-                      <EditableInterval
-                        time_change={handleTimeChange}
-                        value_change={handleValueChange}
-                        add_interval={handleAddInterval}
-                        del_interval={handleDelInterval}
-                        expected_measure={expected_measure}
-                        idx={emidx}
-                        key={'editable_interval_component-' + expected_measure.unit_id + '-' + emidx}
-                        expected_measures={expected_measures} />
-                    ))}
-                  </Flex>))
-                }
-                <Flex>
-                {chamberUnits.data.filter((unit) => !unit.controllable).map((unit, idx) => (
-                  <DisplayUnit key={'unit-' + idx}
-                      current_measure={chamberStatus?.find((unit_measure) => (
-                        unit_measure.sensor_unit?.unit?.id === unit.id
-                      ))}
-                      unit={unit}
-                    ></DisplayUnit>
-                )) }
+                  )) }
                 </Flex>
               </Flex>
               <Center padding={5}>
