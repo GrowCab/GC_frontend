@@ -226,7 +226,7 @@ const App: React.FC = () => {
                       <DisplayDials key={'dial-' + idx} expected_measures={
                         chamberSchedule.expected_measure!.filter(
                           (expected_measure) => (expected_measure.unit_id === unit.id)
-                        )} current_measure={chamberStatus?.find((unit_measure) => (
+                        )} current_measure={chamberStatus?.sensor_measure?.find((unit_measure) => (
                           unit_measure.sensor_unit?.unit?.id === unit.id
                         ))}
                       />
@@ -249,12 +249,13 @@ const App: React.FC = () => {
                 <Flex flexWrap={'wrap'} flexDirection={'row'} justifyContent={'start'} alignContent={'start'}>
                   {chamberUnits.data.filter((unit) => !unit.controllable).map((unit, idx) => (
                     <DisplayUnit key={'unit-' + idx}
-                        current_measure={chamberStatus?.find((unit_measure) => (
+                        current_measure={chamberStatus?.sensor_measure?.find((unit_measure) => (
                           unit_measure.sensor_unit?.unit?.id === unit.id
                         ))}
                         unit={unit}
                     />
                   )) }
+                  <Text>{chamberStatus?.timestamp}</Text>
                 </Flex>
               </Flex>
               <Center padding={5}>

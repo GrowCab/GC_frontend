@@ -1,12 +1,12 @@
 import { arc, pie } from 'd3-shape'
-import { ExpectedMeasure, Measure } from './Api_spec/generated-types'
+import { ExpectedMeasure, SensorMeasure } from './Api_spec/generated-types'
 import React from 'react'
 import { interpolateBlues, PieArcDatum } from 'd3'
 
 export const DisplayDials = ({
   expected_measures,
   current_measure
-}: { expected_measures: ExpectedMeasure[], current_measure: Measure | undefined }) => {
+}: { expected_measures: ExpectedMeasure[], current_measure: SensorMeasure | undefined }) => {
   const svgHeight = 300
   const svgWidth = 300
   const { max, min } = (current_measure?.sensor_unit) ? current_measure.sensor_unit : { min: 0, max: 1 }

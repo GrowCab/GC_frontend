@@ -11,66 +11,66 @@ export interface ChamberSensor {
 export interface Chamber {
   chamber_sensor?: ChamberSensor[];
   id?: number;
-  description: string;
   timestamp?: string | null;
+  description: string;
 }
 
 export interface Sensor {
-  description: string;
   hardware_classname: string;
-  chamber?: Chamber;
   timestamp?: string | null;
+  chamber?: Chamber;
+  description: string;
 }
 
 export interface EditableSensor {
-  description: string;
   hardware_classname: string;
-  chamber?: Chamber;
   timestamp?: string | null;
+  chamber?: Chamber;
+  description: string;
 }
 
 export interface Error {
-  /**
-   * Error message
-   */
-  message?: string;
   /**
    * Error name
    */
   status?: string;
   /**
+   * Error code
+   */
+  code?: number;
+  /**
    * Errors
    */
   errors?: {[key: string]: any};
   /**
-   * Error code
+   * Error message
    */
-  code?: number;
+  message?: string;
 }
 
 export interface Unit {
-  hardware_label: string;
-  controllable?: boolean | null;
-  label: string;
   id?: number;
   description: string;
+  controllable?: boolean | null;
+  hardware_label: string;
+  label: string;
 }
 
 export interface ExpectedMeasure {
-  unit_id: number;
-  unit?: Unit;
-  end_minute: number;
-  id?: number;
   end_hour: number;
+  id?: number;
+  unit?: Unit;
+  unit_id: number;
+  end_minute: number;
   expected_value: number;
 }
 
 export interface Configuration {
   expected_measure?: ExpectedMeasure[];
-  timestamp?: string | null;
-  chamber_id: number;
   id?: number;
+  chamber_id: number;
   description: string;
+  timestamp?: string | null;
 }
 
 export interface EditableConfiguration {
@@ -85,29 +85,6 @@ export interface SensorUnit {
   max: number;
 }
 
-export interface Measure {
-  sensor_unit_id: number;
-  sensor_unit?: SensorUnit;
-  current_value: number;
-  id?: number;
-  measure_group_id: number;
-  chamber_sensor_id: number;
-}
-
-export interface ChamberStatus {
-  data?: {
-  [key: string]: {[key: string]: any};
-};
-}
-
-export interface SensorMeasure {
-  sensor_unit_id: number;
-  sensor_unit?: SensorUnit;
-  chamber_sensor?: ChamberSensor;
-  current_value: number;
-  chamber_sensor_id: number;
-}
-
 export interface Actuator {
   id?: number;
   description: string;
@@ -119,31 +96,55 @@ export interface ChamberActuator {
 }
 
 export interface ActuatorMeasure {
-  chamber_actuator_id: number;
   chamber_actuator?: ChamberActuator;
   current_value: number;
+  chamber_actuator_id: number;
 }
 
-export interface MeasureGroup {
-  sensor_measure?: SensorMeasure[];
-  actuator_measure?: ActuatorMeasure[];
-  timestamp?: string | null;
-}
-
-export interface EditableSensorMeasure {
+export interface SensorMeasure {
+  sensor_unit?: SensorUnit;
   sensor_unit_id: number;
   current_value: number;
   chamber_sensor_id: number;
+  chamber_sensor?: ChamberSensor;
 }
 
-export interface EditableActuatorMeasure {
-  chamber_actuator_id: number;
+export interface Measure {
+  id?: number;
+  sensor_unit?: SensorUnit;
+  sensor_unit_id: number;
   current_value: number;
+  measure_group_id: number;
+  chamber_sensor_id: number;
+}
+
+export interface MeasureGroup {
+  timestamp?: string | null;
+  actuator_measure?: ActuatorMeasure[];
+  sensor_measure?: SensorMeasure[];
+}
+
+export interface ChamberStatus {
+  data?: {
+  [key: string]: {[key: string]: any};
+};
+}
+
+
+export interface EditableActuatorMeasure {
+  current_value: number;
+  chamber_actuator_id: number;
+}
+
+export interface EditableSensorMeasure {
+  current_value: number;
+  chamber_sensor_id: number;
+  sensor_unit_id: number;
 }
 
 export interface EditableMeasureGroup {
-  sensor_measure?: EditableSensorMeasure[];
   actuator_measure?: EditableActuatorMeasure[];
+  sensor_measure?: EditableSensorMeasure[];
 }
 
 /**
@@ -458,19 +459,19 @@ export interface GetChamberStatusPathParams {
   chamber_id: number
 }
 
-export type GetChamberStatusProps = Omit<GetProps<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
+export type GetChamberStatusProps = Omit<GetProps<MeasureGroup, DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
 
 export const GetChamberStatus = ({chamber_id, ...props}: GetChamberStatusProps) => (
-  <Get<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>
+  <Get<MeasureGroup, DefaultErrorResponse, void, GetChamberStatusPathParams>
     path={`/api/chamber_status/${chamber_id}`}
     
     {...props}
   />
 );
 
-export type UseGetChamberStatusProps = Omit<UseGetProps<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
+export type UseGetChamberStatusProps = Omit<UseGetProps<MeasureGroup, DefaultErrorResponse, void, GetChamberStatusPathParams>, "path"> & GetChamberStatusPathParams;
 
-export const useGetChamberStatus = ({chamber_id, ...props}: UseGetChamberStatusProps) => useGet<Measure[], DefaultErrorResponse, void, GetChamberStatusPathParams>((paramsInPath: GetChamberStatusPathParams) => `/api/chamber_status/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
+export const useGetChamberStatus = ({chamber_id, ...props}: UseGetChamberStatusProps) => useGet<MeasureGroup, DefaultErrorResponse, void, GetChamberStatusPathParams>((paramsInPath: GetChamberStatusPathParams) => `/api/chamber_status/${paramsInPath.chamber_id}`, {  pathParams: { chamber_id }, ...props });
 
 
 export interface PutChamberStatusPathParams {
