@@ -1,6 +1,14 @@
 import { ExpectedMeasure } from './Api_spec/generated-types'
 import React from 'react'
-import { Button, Input, InputGroup } from '@chakra-ui/react'
+import {
+  Button,
+  Input,
+  InputGroup,
+  NumberDecrementStepper, NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper
+} from '@chakra-ui/react'
 
 function getTimeString (hour: number, minute: number) {
   return String(hour).padStart(2, '0') + ':' + String(minute).padStart(2, '0')
@@ -33,11 +41,17 @@ export const EditableInterval = ({ add_interval, del_interval, time_change, valu
                if (time_change) { time_change(expected_measure, e.target.value) }
              }}
              value={getTimeString(expected_measure.end_hour, expected_measure.end_minute)} />
-        <Input m={1}
-          type='text' onChange={e => {
-            if (value_change) { value_change(expected_measure, Number(e.target.value)) }
-          }} value={expected_measure.expected_value} />{expected_measure.unit?.description}
-        <Button
+      <NumberInput size="lg" maxW={32} defaultValue={expected_measure.expected_value} onChange={
+          value => {
+            if (value_change) { value_change(expected_measure, Number(value)) }
+          }}>
+          <NumberInputField />
+          <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+          </NumberInputStepper>
+      </NumberInput>
+          <Button
           m={1}
           colorScheme={'teal'}
           disabled={

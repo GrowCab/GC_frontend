@@ -255,7 +255,8 @@ const App: React.FC = () => {
                         unit={unit}
                     />
                   )) }
-                  <Text fontSize={'2xl'} paddingBottom={'2em'}>{chamberStatus?.timestamp}</Text>
+                  <Text fontSize={'2xl'}>Last measurement:</Text>
+                  <Text fontSize={'2xl'} paddingBottom={'2em'}>{chamberStatus?.timestamp?.replace('T', ' ').slice(0, 19)}</Text>
                 </Flex>
               </Flex>
               <Center padding={5}>
