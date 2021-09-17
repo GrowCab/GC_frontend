@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { ReactComponent as PowerButton } from './assets/power-button-svgrepo-com.svg'
 import './App.css'
 import {
   Configuration,
@@ -211,7 +212,7 @@ const App: React.FC = () => {
     <Box className='App'>
       <header className='App-header'>
         <Heading width={'90%'}>GrowCab</Heading>
-        <Button onClick={powerOffModalOnOpen} colorScheme={'red'}><Text size={'4xl'}>⏻</Text></Button>
+        <Button onClick={powerOffModalOnOpen} colorScheme={'red'}><PowerButton transform={'scale(2)'}/></Button>
       </header>
       {
         (chamberUnits.data && chamberSchedule && chamberSchedule.expected_measure)
