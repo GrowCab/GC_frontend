@@ -7,7 +7,7 @@ import {
   useGetChamberSchedule,
   useGetChamberStatus,
   useGetChamberUnits,
-  usePutConfiguration
+  usePutConfiguration, useSetChamberPowerStatus
 } from './Api_spec/generated-types'
 import { EditableInterval } from './EditableInterval'
 import { DisplayDials } from './DisplayDials'
@@ -200,12 +200,22 @@ const App: React.FC = () => {
     }
   }, [editableChamberSchedule, chamberSchedule])
 
-  const rebootAction = () => {
-    console.log('Reboot')
+  const setChamberPowerStatus = useSetChamberPowerStatus({ chamber_id: 1 })
+
+  const rebootAction = async () => {
+    await setChamberPowerStatus.mutate({ status: 'REBOOT' }).then(value => {
+      console.log('Reboot')
+    }, reason => {
+      console.log(reason)
+    })
   }
 
-  const powerOffAction = () => {
-    console.log('Power Off')
+  const powerOffAction = async () => {
+    await setChamberPowerStatus.mutate({ status: 'POWER_OFF' }).then(value => {
+      console.log('Power off')
+    }, reason => {
+      console.log(reason)
+    })
   }
 
   return (
